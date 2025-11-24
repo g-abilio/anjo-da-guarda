@@ -1,0 +1,2158 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anjo da Guarda</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100%;
+      overflow: hidden;
+    }
+
+    html {
+      height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    #app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      max-width: 480px;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 0 50px rgba(0,0,0,0.3);
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .header p {
+      margin: 8px 0 0 0;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    /* Login Screen */
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 400px;
+      margin: 40px auto;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input, .form-group select {
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #667eea;
+      border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+      background: #f5f5ff;
+    }
+
+    /* Navigation */
+    .nav-bottom {
+      display: flex;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+      position: relative;
+      z-index: 10;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 8px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.3s;
+      font-size: 12px;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: #667eea;
+      background: #f5f5ff;
+    }
+
+    .nav-item .icon {
+      font-size: 24px;
+      display: block;
+    }
+
+    .nav-item .label {
+      font-size: 11px;
+      font-weight: 500;
+      display: block;
+      white-space: nowrap;
+    }
+
+    /* Emergency Button */
+    .emergency-btn {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(255, 107, 107, 0.6);
+      z-index: 1000;
+      transition: all 0.3s;
+      animation: pulse 2s infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .emergency-btn:hover {
+      transform: translateX(-50%) scale(1.1);
+      box-shadow: 0 8px 32px rgba(255, 107, 107, 0.8);
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 6px 24px rgba(255, 107, 107, 0.6); }
+      50% { box-shadow: 0 8px 32px rgba(255, 107, 107, 0.9); }
+    }
+
+    /* Denúncia Form */
+    .report-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    textarea {
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    /* Success Message */
+    .success-box {
+      background: #e8f5e9;
+      border: 2px solid #4caf50;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .success-box .icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .success-box h2 {
+      margin: 0 0 12px 0;
+      color: #2e7d32;
+    }
+
+    .protocol {
+      font-size: 24px;
+      font-weight: 700;
+      color: #667eea;
+      margin: 16px 0;
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    /* Reports List */
+    .reports-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .report-item {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .report-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .report-protocol {
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-analyzing {
+      background: #cce5ff;
+      color: #004085;
+    }
+
+    .status-completed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    /* Games */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .game-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .game-card:hover {
+      border-color: #667eea;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .game-card .icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+
+    .game-card h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    /* Quiz */
+    .quiz-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .question-box {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .question-box h2 {
+      margin: 0 0 20px 0;
+      color: #333;
+      font-size: 20px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      padding: 16px;
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    .option-btn:hover {
+      border-color: #667eea;
+      background: #f5f5ff;
+    }
+
+    .option-btn.correct {
+      border-color: #4caf50;
+      background: #e8f5e9;
+    }
+
+    .option-btn.incorrect {
+      border-color: #f44336;
+      background: #ffebee;
+    }
+
+    /* Map */
+    .map-container {
+      background: #e0e0e0;
+      height: 300px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-markers {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .map-marker {
+      position: absolute;
+      font-size: 32px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .map-marker:hover {
+      transform: scale(1.3);
+    }
+
+    .places-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .place-item {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .place-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .place-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .place-icon {
+      font-size: 32px;
+    }
+
+    .place-info h3 {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .place-info p {
+      margin: 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* Chat */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .message.bot {
+      background: #f0f0f0;
+      align-self: flex-start;
+    }
+
+    .message.user {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      align-self: flex-end;
+    }
+
+    .chat-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 16px;
+      margin-bottom: 16px;
+    }
+
+    .chat-option-btn {
+      padding: 12px 16px;
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 20px;
+      color: #667eea;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .chat-option-btn:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    /* Back Button */
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.3);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.5);
+    }
+
+    /* Loading State */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+
+    .empty-state .icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    /* Chat Input */
+    .chat-input-container {
+      padding: 12px 16px;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .chat-input-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 24px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .chat-send-btn {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+
+    .chat-send-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .chat-send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Human Attendant Banner */
+    .human-attendant-banner {
+      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+      color: white;
+      padding: 16px;
+      margin: 0;
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .human-attendant-banner strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: inline-flex;
+      gap: 4px;
+      padding: 12px 16px;
+      background: #f0f0f0;
+      border-radius: 16px;
+      align-self: flex-start;
+    }
+
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: #999;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-8px);
+      }
+    }
+
+    /* Place Details */
+    .place-details {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .place-details h2 {
+      margin: 0 0 16px 0;
+      color: #333;
+    }
+
+    .detail-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
+
+    .detail-row .icon {
+      font-size: 20px;
+      color: #667eea;
+      margin-top: 2px;
+    }
+
+    .detail-row .text {
+      flex: 1;
+      color: #666;
+      font-size: 15px;
+    }
+
+    /* Route */
+    .route-map {
+      background: #e0e0e0;
+      height: 400px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .route-map .icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      color: #667eea;
+    }
+
+    .route-info {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .route-info h3 {
+      margin: 0 0 12px 0;
+      color: #333;
+    }
+
+    .route-step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .route-step:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      flex: 1;
+      color: #666;
+      font-size: 15px;
+    }
+
+    .score-display {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .score-display .icon {
+      font-size: 80px;
+      margin-bottom: 16px;
+    }
+
+    .score-display h2 {
+      margin: 0 0 12px 0;
+      font-size: 32px;
+      color: #333;
+    }
+
+    .score-display p {
+      margin: 0 0 24px 0;
+      font-size: 18px;
+      color: #666;
+    }
+
+    /* Chat List Item */
+    .chat-list-item {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 12px;
+    }
+
+    .chat-list-item:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .chat-list-item.urgent {
+      border-color: #ff6b6b;
+      background: #fff5f5;
+    }
+
+    .chat-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .chat-list-name {
+      font-weight: 700;
+      color: #333;
+      font-size: 16px;
+    }
+
+    .chat-list-time {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .chat-list-preview {
+      color: #666;
+      font-size: 14px;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .urgent-badge {
+      display: inline-block;
+      background: #ff6b6b;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .content {
+        padding: 16px;
+      }
+
+      .emergency-btn {
+        bottom: 70px;
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div id="app"><!-- Tela 1.0: Login -->
+   <div id="screen-login" class="screen active">
+    <div class="header">
+     <h1>👼 Anjo da Guarda</h1>
+     <p>Bem-vindo ao sistema de proteção</p>
+    </div>
+    <div class="content">
+     <form class="login-form" id="loginForm">
+      <div class="form-group"><label for="email">Email</label> <input type="email" id="email" placeholder="Digite seu email" required>
+      </div>
+      <div class="form-group"><label for="password">Senha</label> <input type="password" id="password" placeholder="Digite sua senha" required>
+      </div><button type="submit" class="btn btn-primary">Fazer Login</button>
+      <div style="margin-top: 12px; padding: 12px; background: #f0f0f0; border-radius: 8px; font-size: 13px;"><strong>👶 Criança:</strong> crianca@teste.com<br><strong>👨‍👩‍👧 Pai/Cidadão:</strong> pai@teste.com<br><strong>👮 Rede de Proteção:</strong> profissional@teste.com
+      </div>
+     </form>
+    </div>
+   </div><!-- Tela 2.0: Home -->
+   <div id="screen-home" class="screen">
+    <div class="header">
+     <h1>🏠 Início</h1>
+     <p id="welcomeText">Bem-vindo, usuário!</p>
+    </div>
+    <div class="content">
+     <div style="text-align: center; padding: 40px 20px;">
+      <div style="font-size: 80px; margin-bottom: 24px;">
+       🛡️
+      </div>
+      <h2 style="margin: 0 0 12px 0; color: #333;">Anjo da Guarda</h2>
+      <p id="homeInstructions" style="margin: 0; color: #666; font-size: 16px; line-height: 1.6;">Use o menu abaixo para acessar as funcionalidades do sistema. Em caso de emergência, clique no botão vermelho.</p>
+     </div>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+    <nav class="nav-bottom" id="mainNavigation"><button class="nav-item active" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item" id="navReport" onclick="showScreen('screen-report')" style="display: none;"> <span class="icon">📝</span> <span class="label">Denúncia</span> </button> <button class="nav-item" id="navReports" onclick="showScreen('screen-reports')" style="display: none;"> <span class="icon">📋</span> <span class="label">Processos</span> </button> <button class="nav-item" id="navChat" onclick="showScreen('screen-chat')" style="display: none;"> <span class="icon">💬</span> <span class="label">Chat</span> </button> <button class="nav-item" id="navMap" onclick="showScreen('screen-map')" style="display: none;"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button> <button class="nav-item" id="navGames" onclick="showScreen('screen-games')" style="display: none;"> <span class="icon">🎮</span> <span class="label">Jogos</span> </button>
+    </nav>
+   </div><!-- Tela 3.1: Formulário de Denúncia -->
+   <div id="screen-report" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
+     <h1>📝 Nova Denúncia</h1>
+     <p>Registre uma denúncia de forma segura</p>
+    </div>
+    <div class="content">
+     <form class="report-form" id="reportForm">
+      <div class="form-group"><label for="violenceType">Tipo de Violência</label> <select id="violenceType" required> <option value="">Selecione o tipo</option> <option value="fisica">Violência Física</option> <option value="psicologica">Violência Psicológica</option> <option value="sexual">Violência Sexual</option> <option value="negligencia">Negligência</option> <option value="exploracao">Exploração</option> <option value="outro">Outro</option> </select>
+      </div>
+      <div class="form-group"><label for="description">Descrição do Ocorrido</label> <textarea id="description" placeholder="Descreva detalhadamente o que aconteceu..." required></textarea>
+      </div>
+      <div class="form-group"><label for="date">Data do Ocorrido</label> <input type="date" id="date" required>
+      </div>
+      <div class="form-group"><label for="location">Local/Endereço</label> <input type="text" id="location" placeholder="Rua, bairro, cidade" required>
+      </div>
+      <div class="form-group"><label for="victimName">Nome da Vítima (se souber)</label> <input type="text" id="victimName" placeholder="Nome completo ou apelido">
+      </div>
+      <div class="form-group"><label for="victimAge">Faixa Etária da Vítima</label> <select id="victimAge" required> <option value="">Selecione</option> <option value="0-3">0 a 3 anos</option> <option value="4-7">4 a 7 anos</option> <option value="8-12">8 a 12 anos</option> <option value="13-17">13 a 17 anos</option> </select>
+      </div>
+      <div class="form-group"><label for="victimGender">Gênero da Vítima</label> <select id="victimGender" required> <option value="">Selecione</option> <option value="feminino">Feminino</option> <option value="masculino">Masculino</option> <option value="outro">Outro</option> <option value="nao-informar">Prefiro não informar</option> </select>
+      </div>
+      <div class="form-group"><label for="relationshipVictim">Relação com a Vítima</label> <select id="relationshipVictim" required> <option value="">Selecione</option> <option value="pai-mae">Pai/Mãe</option> <option value="familiar">Familiar</option> <option value="vizinho">Vizinho</option> <option value="professor">Professor/Educador</option> <option value="profissional">Profissional da Saúde</option> <option value="desconhecido">Não conheço</option> <option value="outro">Outro</option> </select>
+      </div>
+      <div class="form-group"><label for="aggressorName">Nome do Agressor (se souber)</label> <input type="text" id="aggressorName" placeholder="Nome ou identificação">
+      </div>
+      <div class="form-group"><label for="aggressorRelation">Relação do Agressor com a Vítima</label> <select id="aggressorRelation"> <option value="">Selecione (se souber)</option> <option value="pai-mae">Pai/Mãe</option> <option value="padrasto-madrasta">Padrasto/Madrasta</option> <option value="familiar">Outro Familiar</option> <option value="conhecido">Conhecido da Família</option> <option value="desconhecido">Desconhecido</option> <option value="outro">Outro</option> </select>
+      </div>
+      <div class="checkbox-group"><input type="checkbox" id="livesTogether"> <label for="livesTogether">O agressor mora com a vítima?</label>
+      </div>
+      <div class="checkbox-group"><input type="checkbox" id="anonymous"> <label for="anonymous">Enviar denúncia de forma anônima</label>
+      </div><button type="submit" class="btn btn-primary" id="submitReportBtn"> <span id="submitReportText">Enviar Denúncia</span> </button>
+     </form>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+    <nav class="nav-bottom"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item active" onclick="showScreen('screen-report')"> <span class="icon">📝</span> <span class="label">Denúncia</span> </button> <button class="nav-item" onclick="showScreen('screen-reports')"> <span class="icon">📋</span> <span class="label">Processos</span> </button> <button class="nav-item" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button>
+    </nav>
+   </div><!-- Tela 3.2: Confirmação -->
+   <div id="screen-confirmation" class="screen">
+    <div class="header" style="position: relative;">
+     <h1>✅ Denúncia Enviada</h1>
+     <p>Sua denúncia foi registrada com sucesso</p>
+    </div>
+    <div class="content">
+     <div class="success-box">
+      <div class="icon">
+       ✅
+      </div>
+      <h2>Denúncia Registrada!</h2>
+      <p>Seu protocolo para acompanhamento:</p>
+      <div class="protocol" id="protocolNumber">
+       -
+      </div>
+      <p style="font-size: 14px; color: #666;">Guarde este número para acompanhar sua denúncia</p>
+     </div><button class="btn btn-primary" onclick="showScreen('screen-reports')" style="width: 100%; margin-bottom: 12px;"> Ver Minhas Denúncias </button> <button class="btn btn-secondary" onclick="showScreen('screen-home')" style="width: 100%;"> Voltar ao Início </button>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+   </div><!-- Tela 4.1: Minhas Denúncias -->
+   <div id="screen-reports" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
+     <h1>📋 Processos</h1>
+     <p>Acompanhe o status das denúncias</p>
+    </div>
+    <div class="content">
+     <div id="reportsList" class="reports-list"><!-- Reports will be dynamically added here -->
+     </div>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+    <nav class="nav-bottom" id="reportsNav"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item" onclick="showScreen('screen-report')"> <span class="icon">📝</span> <span class="label">Denúncia</span> </button> <button class="nav-item active" onclick="showScreen('screen-reports')"> <span class="icon">📋</span> <span class="label">Processos</span> </button> <button class="nav-item" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button>
+    </nav>
+   </div><!-- Tela 5.1: Catálogo de Jogos -->
+   <div id="screen-games" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
+     <h1>🎮 Jogos e Quizzes</h1>
+     <p>Aprenda brincando!</p>
+    </div>
+    <div class="content">
+     <div class="games-grid">
+      <div class="game-card" onclick="startQuiz('rights')">
+       <div class="icon">
+        📚
+       </div>
+       <h3>Meus Direitos</h3>
+      </div>
+      <div class="game-card" onclick="startQuiz('prevention')">
+       <div class="icon">
+        🛡️
+       </div>
+       <h3>Prevenção</h3>
+      </div>
+      <div class="game-card" onclick="startQuiz('safety')">
+       <div class="icon">
+        🔒
+       </div>
+       <h3>Segurança</h3>
+      </div>
+      <div class="game-card" onclick="startQuiz('help')">
+       <div class="icon">
+        🆘
+       </div>
+       <h3>Pedir Ajuda</h3>
+      </div>
+     </div>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+    <nav class="nav-bottom"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item" onclick="showScreen('screen-chat')"> <span class="icon">💬</span> <span class="label">Chat</span> </button> <button class="nav-item" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button> <button class="nav-item active" onclick="showScreen('screen-games')"> <span class="icon">🎮</span> <span class="label">Jogos</span> </button>
+    </nav>
+   </div><!-- Tela 5.2: Quiz -->
+   <div id="screen-quiz" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-games')">←</button>
+     <h1 id="quizTitle">Quiz</h1>
+     <p>Responda as perguntas</p>
+    </div>
+    <div class="content">
+     <div class="quiz-container">
+      <div class="question-box">
+       <h2 id="questionText">Carregando pergunta...</h2>
+       <div class="options" id="optionsContainer"><!-- Options will be added here -->
+       </div>
+      </div>
+     </div>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+   </div><!-- Tela 5.3: Resultado -->
+   <div id="screen-score" class="screen">
+    <div class="header">
+     <h1>🏆 Resultado</h1>
+     <p>Veja como você se saiu!</p>
+    </div>
+    <div class="content">
+     <div class="score-display">
+      <div class="icon">
+       🎉
+      </div>
+      <h2 id="scoreText">0/0</h2>
+      <p id="scoreMessage">Parabéns!</p><button class="btn btn-primary" onclick="showScreen('screen-games')" style="margin-bottom: 12px;"> Voltar aos Jogos </button> <button class="btn btn-secondary" onclick="showScreen('screen-home')"> Ir para o Início </button>
+     </div>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+   </div><!-- Tela 6.1: Mapa -->
+   <div id="screen-map" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
+     <h1>🗺️ Pontos de Apoio</h1>
+     <p>Locais próximos para ajuda</p>
+    </div>
+    <div class="content">
+     <div class="map-container">
+      <div style="text-align: center;">
+       <div style="font-size: 64px; margin-bottom: 12px;">
+        🗺️
+       </div>
+       <p style="margin: 0; color: #666;">Mapa Interativo</p>
+      </div>
+      <div class="map-markers">
+       <div class="map-marker" style="top: 30%; left: 40%;" onclick="showPlace('ct1')">
+        📍
+       </div>
+       <div class="map-marker" style="top: 60%; left: 60%;" onclick="showPlace('ong1')">
+        📍
+       </div>
+       <div class="map-marker" style="top: 45%; left: 70%;" onclick="showPlace('hospital1')">
+        📍
+       </div>
+      </div>
+     </div>
+     <h3 style="margin: 0 0 16px 0; color: #333;">Locais Próximos</h3>
+     <div class="places-list">
+      <div class="place-item" onclick="showPlace('ct1')">
+       <div class="place-header">
+        <div class="place-icon">
+         🏛️
+        </div>
+        <div class="place-info">
+         <h3>Conselho Tutelar Centro</h3>
+         <p>Rua das Flores, 123 - 1.2 km</p>
+        </div>
+       </div>
+      </div>
+      <div class="place-item" onclick="showPlace('ong1')">
+       <div class="place-header">
+        <div class="place-icon">
+         🤝
+        </div>
+        <div class="place-info">
+         <h3>ONG Proteção Infantil</h3>
+         <p>Av. Principal, 456 - 2.5 km</p>
+        </div>
+       </div>
+      </div>
+      <div class="place-item" onclick="showPlace('hospital1')">
+       <div class="place-header">
+        <div class="place-icon">
+         🏥
+        </div>
+        <div class="place-info">
+         <h3>Hospital Municipal</h3>
+         <p>Rua da Saúde, 789 - 3.1 km</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+    <nav class="nav-bottom" id = "mapNav"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item" onclick="showScreen('screen-chat')"> <span class="icon">💬</span> <span class="label">Chat</span> </button> <button class="nav-item active" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button> <button class="nav-item" onclick="showScreen('screen-games')"> <span class="icon">🎮</span> <span class="label">Jogos</span> </button>
+    </nav>
+   </div><!-- Tela 6.2: Detalhes do Local -->
+   <div id="screen-place-details" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-map')">←</button>
+     <h1 id="placeDetailTitle">Local</h1>
+     <p>Informações de contato</p>
+    </div>
+    <div class="content">
+     <div class="place-details">
+      <h2 id="placeName">Nome do Local</h2>
+      <div class="detail-row"><span class="icon">📍</span> <span class="text" id="placeAddress">Endereço</span>
+      </div>
+      <div class="detail-row"><span class="icon">📞</span> <span class="text" id="placePhone">Telefone</span>
+      </div>
+      <div class="detail-row"><span class="icon">🕐</span> <span class="text" id="placeHours">Horário</span>
+      </div>
+     </div><button class="btn btn-primary" onclick="showRoute()" style="width: 100%; margin-bottom: 12px;"> 📍 Solicitar Rota </button> <button class="btn btn-secondary" onclick="showScreen('screen-map')" style="width: 100%;"> Voltar ao Mapa </button>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+   </div><!-- Tela 6.3: Rota -->
+   <div id="screen-route" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-place-details')">←</button>
+     <h1>🧭 Rota</h1>
+     <p>Siga as instruções abaixo</p>
+    </div>
+    <div class="content">
+     <div class="route-map">
+      <div class="icon">
+       🗺️
+      </div>
+      <h3 style="margin: 0; color: #666;">Visualização da Rota</h3>
+      <p style="margin: 8px 0 0 0; color: #999; font-size: 14px;">Distância: 1.2 km • Tempo: 15 min</p>
+     </div>
+     <div class="route-info">
+      <h3>Instruções:</h3>
+      <div class="route-step">
+       <div class="step-number">
+        1
+       </div>
+       <div class="step-text">
+        Siga pela Rua Atual por 300m
+       </div>
+      </div>
+      <div class="route-step">
+       <div class="step-number">
+        2
+       </div>
+       <div class="step-text">
+        Vire à esquerda na Av. Principal
+       </div>
+      </div>
+      <div class="route-step">
+       <div class="step-number">
+        3
+       </div>
+       <div class="step-text">
+        Continue por 800m até o destino
+       </div>
+      </div>
+     </div><button class="btn btn-primary" onclick="showScreen('screen-map')" style="width: 100%; margin-top: 16px;"> Voltar ao Mapa </button>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+   </div><!-- Tela 7.1: Chat -->
+   <div id="screen-chat" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
+     <h1>💬 Anjo da Guarda</h1>
+     <p>Como posso ajudar?</p>
+    </div>
+    <div class="chat-container">
+     <div class="chat-messages" id="chatMessages">
+      <div class="message bot">
+       Olá! Eu sou o Anjo da Guarda! Estou aqui para te ajudar. O que você gostaria de saber?
+      </div>
+     </div>
+     <div class="chat-options" id="chatOptions"><button class="chat-option-btn" onclick="sendChatOption('Sinais de violência')"> 🚨 Sinais de violência </button> <button class="chat-option-btn" onclick="sendChatOption('Meus direitos')"> 📚 Meus direitos </button> <button class="chat-option-btn" onclick="sendChatOption('Preciso de ajuda')"> 🆘 Preciso de ajuda </button> <button class="chat-option-btn" onclick="startConversation()"> 💬 Conversar livremente </button>
+     </div>
+    </div>
+    <nav class="nav-bottom" id="chatNav"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item active" onclick="showScreen('screen-chat')"> <span class="icon">💬</span> <span class="label">Chat</span> </button> <button class="nav-item" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button> <button class="nav-item" onclick="showScreen('screen-games')"> <span class="icon">🎮</span> <span class="label">Jogos</span> </button>
+    </nav>
+   </div><!-- Tela 7.2: Chat - Conversa -->
+   <div id="screen-chat-conversation" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="backToChat()">←</button>
+     <h1 id="chatConversationTitle">💬 Anjo da Guarda</h1>
+     <p id="chatConversationSubtitle">Conversa em andamento</p>
+    </div>
+    <div class="chat-container">
+     <div id="humanAttendantBanner" class="human-attendant-banner" style="display: none;">
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 20px;">👤</span>
+       <div><strong>Atendente Humano Conectado</strong>
+        <p style="margin: 4px 0 0 0; font-size: 12px;">Você está falando com um profissional especializado</p>
+       </div>
+      </div>
+     </div>
+     <div class="chat-messages" id="conversationMessages">
+      <div class="message bot">
+       Olá! Pode me contar o que está acontecendo. Estou aqui para ouvir você. 😊
+      </div>
+     </div>
+     <div class="chat-input-container">
+      <form id="chatForm" class="chat-input-form"><input type="text" id="chatInput" class="chat-input" placeholder="Digite sua mensagem..." autocomplete="off"> <button type="submit" class="chat-send-btn"> <span style="font-size: 20px;">📤</span> </button>
+      </form>
+     </div>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+   </div><!-- Tela 8.0: Atendimento Profissional - Lista de Chats -->
+   <div id="screen-attend-list" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
+     <h1>👥 Atendimento</h1>
+     <p>Crianças aguardando atendimento</p>
+    </div>
+    <div class="content">
+     <div id="chatListContainer"><!-- Chat items will be added here -->
+     </div>
+    </div>
+    <nav class="nav-bottom"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item active" onclick="showScreen('screen-attend-list')"> <span class="icon">👥</span> <span class="label">Atendimento</span> </button>
+    </nav>
+   </div><!-- Tela 8.1: Atendimento Profissional - Chat Individual -->
+   <div id="screen-attend-chat" class="screen">
+    <div class="header" style="position: relative; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);"><button class="back-btn" onclick="showScreen('screen-attend-list')">←</button>
+     <h1 id="attendChatName">👤 Atendimento</h1>
+     <p id="attendChatStatus">Criança em situação de risco</p>
+    </div>
+    <div class="chat-container">
+     <div class="human-attendant-banner" style="display: flex;">
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 20px;">👮</span>
+       <div><strong>Modo Profissional Ativo</strong>
+        <p style="margin: 4px 0 0 0; font-size: 12px;">Você está atendendo uma criança</p>
+       </div>
+      </div>
+     </div>
+     <div class="chat-messages" id="attendChatMessages"><!-- Messages will be added here -->
+     </div>
+     <div class="chat-input-container">
+      <form id="attendChatForm" class="chat-input-form"><input type="text" id="attendChatInput" class="chat-input" placeholder="Digite sua mensagem..." autocomplete="off"> <button type="submit" class="chat-send-btn"> <span style="font-size: 20px;">📤</span> </button>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Global state
+    let currentUser = {
+      profile: null,
+      userId: 'user-' + Date.now(),
+      email: null
+    };
+
+    let currentPlace = null;
+    let currentQuiz = null;
+    let quizScore = 0;
+    let currentQuestion = 0;
+    let currentChatId = null;
+
+    // Simulated chats for professional view
+    const simulatedChats = [
+      {
+        id: 'chat-1',
+        childName: 'Ana (9 anos)',
+        lastMessage: 'Meu pai bateu em mim de novo...',
+        time: '2 min atrás',
+        urgent: true,
+        messages: [
+          { role: 'child', content: 'Oi...', time: '14:23' },
+          { role: 'child', content: 'Você pode me ajudar?', time: '14:24' },
+          { role: 'child', content: 'Meu pai bateu em mim de novo...', time: '14:25' },
+          { role: 'child', content: 'Estou com medo', time: '14:25' }
+        ]
+      },
+      {
+        id: 'chat-2',
+        childName: 'Pedro (12 anos)',
+        lastMessage: 'Não quero mais ir para casa',
+        time: '15 min atrás',
+        urgent: true,
+        messages: [
+          { role: 'child', content: 'Olá', time: '14:10' },
+          { role: 'child', content: 'Preciso conversar com alguém', time: '14:11' },
+          { role: 'child', content: 'Não quero mais ir para casa', time: '14:12' },
+          { role: 'child', content: 'Minha mãe sempre grita comigo e me xinga', time: '14:13' }
+        ]
+      },
+      {
+        id: 'chat-3',
+        childName: 'Maria (7 anos)',
+        lastMessage: 'Tenho medo do meu tio',
+        time: '1 hora atrás',
+        urgent: false,
+        messages: [
+          { role: 'child', content: 'Oi anjo', time: '13:15' },
+          { role: 'child', content: 'Posso fazer uma pergunta?', time: '13:16' },
+          { role: 'child', content: 'Tenho medo do meu tio', time: '13:17' },
+          { role: 'child', content: 'Ele me toca de um jeito que não gosto', time: '13:18' }
+        ]
+      }
+    ];
+
+    // Quiz data
+    const quizzes = {
+      rights: {
+        title: '📚 Meus Direitos',
+        questions: [
+          {
+            question: 'Toda criança tem direito a:',
+            options: ['Educação', 'Trabalhar', 'Ficar sozinha', 'Nenhuma das opções'],
+            correct: 0
+          },
+          {
+            question: 'Qual é um direito fundamental da criança?',
+            options: ['Brincar', 'Obedecer sempre', 'Trabalhar em casa', 'Ficar calado'],
+            correct: 0
+          },
+          {
+            question: 'Quem deve proteger os direitos da criança?',
+            options: ['Só os pais', 'Toda a sociedade', 'Ninguém', 'Só a escola'],
+            correct: 1
+          }
+        ]
+      },
+      prevention: {
+        title: '🛡️ Prevenção',
+        questions: [
+          {
+            question: 'O que fazer se alguém te faz sentir desconfortável?',
+            options: ['Ficar quieto', 'Contar para um adulto de confiança', 'Guardar segredo', 'Esquecer'],
+            correct: 1
+          },
+          {
+            question: 'Toques que te deixam desconfortável devem ser:',
+            options: ['Ignorados', 'Aceitos', 'Relatados a um adulto', 'Escondidos'],
+            correct: 2
+          }
+        ]
+      },
+      safety: {
+        title: '🔒 Segurança',
+        questions: [
+          {
+            question: 'É seguro compartilhar informações pessoais online?',
+            options: ['Sim, sempre', 'Não, nunca', 'Só com desconhecidos', 'Só fotos'],
+            correct: 1
+          },
+          {
+            question: 'O que fazer se encontrar conteúdo inapropriado online?',
+            options: ['Compartilhar', 'Contar aos pais/responsáveis', 'Ignorar', 'Guardar'],
+            correct: 1
+          }
+        ]
+      },
+      help: {
+        title: '🆘 Pedir Ajuda',
+        questions: [
+          {
+            question: 'Pedir ajuda quando você está em perigo é:',
+            options: ['Errado', 'Corajoso e correto', 'Fraqueza', 'Desnecessário'],
+            correct: 1
+          },
+          {
+            question: 'Quem pode ajudar em caso de violência?',
+            options: ['Ninguém', 'Conselho Tutelar', 'Só a família', 'Nenhuma opção'],
+            correct: 1
+          }
+        ]
+      }
+    };
+
+    // Places data
+    const places = {
+      ct1: {
+        name: 'Conselho Tutelar Centro',
+        address: 'Rua das Flores, 123 - Centro',
+        phone: '(11) 1234-5678',
+        hours: 'Segunda a Sexta, 8h às 18h'
+      },
+      ong1: {
+        name: 'ONG Proteção Infantil',
+        address: 'Av. Principal, 456 - Bairro Novo',
+        phone: '(11) 9876-5432',
+        hours: 'Segunda a Sexta, 9h às 17h'
+      },
+      hospital1: {
+        name: 'Hospital Municipal',
+        address: 'Rua da Saúde, 789 - Centro',
+        phone: '(11) 192',
+        hours: '24 horas'
+      }
+    };
+
+    // Default config for Element SDK
+    const defaultConfig = {
+      app_title: 'Anjo da Guarda',
+      welcome_message: 'Olá! Eu sou o Anjo da Guarda 👼',
+      emergency_button_text: 'Preciso de ajuda'
+    };
+
+    // Data SDK handler
+    const dataHandler = {
+      onDataChanged(data) {
+        renderReportsList(data);
+      }
+    };
+
+    // Initialize SDKs
+    async function initApp() {
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            const title = config.app_title || defaultConfig.app_title;
+            const welcome = config.welcome_message || defaultConfig.welcome_message;
+
+            const titleElements = document.querySelectorAll('.header h1');
+            titleElements.forEach(el => {
+              if (el.textContent.includes('Anjo') || el.textContent.includes('Guarda')) {
+                el.textContent = '👼 ' + title;
+              }
+            });
+
+            const chatWelcome = document.querySelector('#chatMessages .message.bot');
+            if (chatWelcome) {
+              chatWelcome.textContent = welcome + ' Estou aqui para te ajudar. O que você gostaria de saber?';
+            }
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['app_title', config.app_title || defaultConfig.app_title],
+            ['welcome_message', config.welcome_message || defaultConfig.welcome_message],
+            ['emergency_button_text', config.emergency_button_text || defaultConfig.emergency_button_text]
+          ])
+        });
+      }
+    }
+
+    // Screen navigation
+    function showScreen(screenId) {
+      const screens = document.querySelectorAll('.screen');
+      screens.forEach(screen => screen.classList.remove('active'));
+      
+      const targetScreen = document.getElementById(screenId);
+      if (targetScreen) {
+        targetScreen.classList.add('active');
+      }
+
+      // Update navigation active state
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => item.classList.remove('active'));
+      
+      // If showing attend list, render chats
+      if (screenId === 'screen-attend-list') {
+        renderChatList();
+      }
+
+      function updateEmergencyVisibility() {
+        const isChild = currentUser.profile === 'child';
+        const emergencyButtons = document.querySelectorAll('.emergency-btn');
+    
+        emergencyButtons.forEach(btn => {
+          btn.style.display = isChild ? 'flex' : 'none';  
+        });
+      }
+
+      updateEmergencyVisibility();
+    }
+
+    // Detect user type from email
+    function getUserTypeFromEmail(email) {
+      const lowerEmail = email.toLowerCase();
+      if (lowerEmail.includes('crianca') || lowerEmail.includes('child')) {
+        return 'child';
+      } else if (lowerEmail.includes('profissional') || lowerEmail.includes('professional') || lowerEmail.includes('rede')) {
+        return 'professional';
+      } else {
+        return 'parent'; // Default to parent/citizen
+      }
+    }
+
+    // Profile setup based on type
+    function setupProfile(profile, email) {
+      currentUser.profile = profile;
+      currentUser.email = email;
+      
+      // Update welcome text
+      const welcomeTexts = {
+        child: 'Bem-vindo, criança! 👶',
+        parent: 'Bem-vindo, pai/cidadão! 👨‍👩‍👧',
+        professional: 'Bem-vindo, profissional! 👮'
+      };
+      
+      const welcomeEl = document.getElementById('welcomeText');
+      if (welcomeEl) {
+        welcomeEl.textContent = welcomeTexts[profile];
+      }
+
+      const homeText = document.getElementById('homeInstructions');
+
+    if (profile === 'parent') {
+      homeText.textContent = "Use o menu abaixo para acessar as funcionalidades do sistema.";
+    }
+
+      // Show/hide menu items and emergency button based on profile
+      const navChat = document.getElementById('navChat');
+      const navGames = document.getElementById('navGames');
+      const navReport = document.getElementById('navReport');
+      const navReports = document.getElementById('navReports');
+      const navMap = document.getElementById('navMap');
+      const emergencyBtn = document.getElementById('emergencyBtn');
+      
+      if (profile === 'child') {
+        navChat.style.display = 'flex';
+        navGames.style.display = 'flex';
+        navReport.style.display = 'none';
+        navReports.style.display = 'none';
+        navMap.style.display = 'flex';
+        emergencyBtn.style.display = 'flex';
+      } else if (profile === 'parent') {
+        navChat.style.display = 'none';
+        navGames.style.display = 'none';
+        navReport.style.display = 'flex';
+        navReports.style.display = 'flex';
+        navMap.style.display = 'flex';
+        emergencyBtn.style.display = 'none';
+      } else if (profile === 'professional') {
+        // Professional only has home and attend buttons
+        navChat.style.display = 'none';
+        navGames.style.display = 'none';
+        navReport.style.display = 'none';
+        navReports.style.display = 'none';
+        navMap.style.display = 'none';
+        emergencyBtn.style.display = 'none';
+        
+        // Update home instructions for professional
+        const homeInstructions = document.getElementById('homeInstructions');
+        if (homeInstructions) {
+          homeInstructions.textContent = 'Use o menu abaixo para acessar o atendimento às crianças.';
+        }
+        
+        // Add attend button to main nav
+        const mainNav = document.getElementById('mainNavigation');
+        mainNav.innerHTML = `
+          <button class="nav-item active" onclick="showScreen('screen-home')">
+            <span class="icon">🏠</span>
+            <span class="label">Início</span>
+          </button>
+          <button class="nav-item" onclick="showScreen('screen-attend-list')">
+            <span class="icon">👥</span>
+            <span class="label">Atendimento</span>
+          </button>
+        `;
+      }
+
+      const mapNav = document.getElementById('mapNav');
+      if (profile === 'child') {
+    if (mapNav) {
+        mapNav.innerHTML = `
+            <button class="nav-item" onclick="showScreen('screen-home')">
+                <span class="icon">🏠</span><span class="label">Início</span>
+            </button>
+            <button class="nav-item" onclick="showScreen('screen-chat')">
+                <span class="icon">💬</span><span class="label">Chat</span>
+            </button>
+            <button class="nav-item active" onclick="showScreen('screen-map')">
+                <span class="icon">🗺️</span><span class="label">Mapa</span>
+            </button>
+            <button class="nav-item" onclick="showScreen('screen-games')">
+                <span class="icon">🎮</span><span class="label">Jogos</span>
+            </button>`;
+    }
+}
+    if (profile === 'parent') {
+    if (mapNav) {
+        mapNav.innerHTML = `
+            <button class="nav-item" onclick="showScreen('screen-home')">
+                <span class="icon">🏠</span><span class="label">Início</span>
+            </button>
+            <button class="nav-item" onclick="showScreen('screen-report')">
+                <span class="icon">📝</span><span class="label">Denúncia</span>
+            </button>
+            <button class="nav-item" onclick="showScreen('screen-reports')">
+                <span class="icon">📋</span><span class="label">Processos</span>
+            </button>
+            <button class="nav-item active" onclick="showScreen('screen-map')">
+                <span class="icon">🗺️</span><span class="label">Mapa</span>
+            </button>`;
+    }
+}
+
+      showScreen('screen-home');
+    }
+
+    // Login form
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const userType = getUserTypeFromEmail(email);
+      setupProfile(userType, email);
+    });
+
+    // Report form
+    document.getElementById('reportForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitReportBtn');
+      const submitText = document.getElementById('submitReportText');
+      
+      // Show loading state
+      submitBtn.disabled = true;
+      submitText.innerHTML = '<span class="loading"></span> Enviando...';
+      
+      const violenceType = document.getElementById('violenceType').value;
+      const description = document.getElementById('description').value;
+      const date = document.getElementById('date').value;
+      const location = document.getElementById('location').value;
+      const victimName = document.getElementById('victimName').value;
+      const victimAge = document.getElementById('victimAge').value;
+      const victimGender = document.getElementById('victimGender').value;
+      const relationshipVictim = document.getElementById('relationshipVictim').value;
+      const aggressorName = document.getElementById('aggressorName').value;
+      const aggressorRelation = document.getElementById('aggressorRelation').value;
+      const livesTogether = document.getElementById('livesTogether').checked;
+      const anonymous = document.getElementById('anonymous').checked;
+      
+      const protocol = 'PRO-' + Date.now().toString().slice(-8);
+      
+      const reportData = {
+        id: 'report-' + Date.now(),
+        type: 'report',
+        userId: currentUser.userId,
+        violenceType: violenceType,
+        description: description,
+        date: date,
+        location: location,
+        victimName: victimName,
+        victimAge: victimAge,
+        victimGender: victimGender,
+        relationshipVictim: relationshipVictim,
+        aggressorName: aggressorName,
+        aggressorRelation: aggressorRelation,
+        livesTogether: livesTogether ? 'yes' : 'no',
+        anonymous: anonymous,
+        status: 'pending',
+        protocol: protocol,
+        createdAt: new Date().toISOString()
+      };
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.create(reportData);
+        
+        // Reset button state
+        submitBtn.disabled = false;
+        submitText.textContent = 'Enviar Denúncia';
+        
+        if (result.isOk) {
+          document.getElementById('protocolNumber').textContent = protocol;
+          document.getElementById('reportForm').reset();
+          showScreen('screen-confirmation');
+        } else {
+          const errorMsg = document.createElement('div');
+          errorMsg.style.cssText = 'background: #ffebee; border: 2px solid #f44336; border-radius: 8px; padding: 12px; margin-top: 12px; color: #c62828; text-align: center;';
+          errorMsg.textContent = 'Erro ao enviar denúncia. Tente novamente.';
+          document.querySelector('#reportForm').appendChild(errorMsg);
+          setTimeout(() => errorMsg.remove(), 3000);
+        }
+      }
+    });
+
+    // Sample reports for demonstration
+    const sampleReports = [
+      {
+        id: 'sample-1',
+        type: 'report',
+        userId: 'demo-user',
+        protocol: 'PRO-12345678',
+        violenceType: 'negligencia',
+        description: 'Criança sozinha em casa frequentemente',
+        date: '2024-01-15',
+        location: 'Rua das Acácias, 234 - Jardim Europa',
+        victimAge: '4-7',
+        status: 'analyzing',
+        createdAt: new Date('2024-01-15').toISOString()
+      },
+      {
+        id: 'sample-2',
+        type: 'report',
+        userId: 'demo-user',
+        protocol: 'PRO-87654321',
+        violenceType: 'fisica',
+        description: 'Criança com marcas de agressão',
+        date: '2024-01-10',
+        location: 'Av. Central, 567 - Centro',
+        victimAge: '8-12',
+        status: 'completed',
+        createdAt: new Date('2024-01-10').toISOString()
+      }
+    ];
+
+    // Render reports list
+    function renderReportsList(data) {
+      const reportsList = document.getElementById('reportsList');
+      if (!reportsList) return;
+
+      let userReports = data.filter(item => item.type === 'report' && (currentUser.profile === 'professional' || item.userId === currentUser.userId));
+
+      // Add sample reports if user is parent/citizen and no reports exist
+      if (currentUser.profile === 'parent' && userReports.length === 0) {
+        userReports = sampleReports;
+      }
+
+      if (userReports.length === 0) {
+        reportsList.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📋</div>
+            <p>Nenhum processo registrado ainda</p>
+          </div>
+        `;
+        return;
+      }
+
+      reportsList.innerHTML = userReports.map(report => {
+        const statusClass = report.status === 'pending' ? 'status-pending' : 
+                          report.status === 'analyzing' ? 'status-analyzing' : 'status-completed';
+        const statusText = report.status === 'pending' ? 'Aguardando análise' : 
+                         report.status === 'analyzing' ? 'Em análise' : 'Analisada';
+        
+        return `
+          <div class="report-item">
+            <div class="report-header">
+              <span class="report-protocol">${report.protocol}</span>
+              <span class="status-badge ${statusClass}">${statusText}</span>
+            </div>
+            <p style="margin: 8px 0 4px 0; color: #666; font-size: 14px;">
+              <strong>Tipo:</strong> ${getViolenceTypeLabel(report.violenceType)}
+            </p>
+            <p style="margin: 4px 0; color: #666; font-size: 14px;">
+              <strong>Local:</strong> ${report.location}
+            </p>
+            <p style="margin: 4px 0; color: #666; font-size: 14px;">
+              <strong>Data:</strong> ${new Date(report.date).toLocaleDateString('pt-BR')}
+            </p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getViolenceTypeLabel(type) {
+      const labels = {
+        'fisica': 'Violência Física',
+        'psicologica': 'Violência Psicológica',
+        'sexual': 'Violência Sexual',
+        'negligencia': 'Negligência',
+        'exploracao': 'Exploração',
+        'outro': 'Outro'
+      };
+      return labels[type] || type;
+    }
+
+    // Render chat list for professionals
+    function renderChatList() {
+      const container = document.getElementById('chatListContainer');
+      if (!container) return;
+
+      container.innerHTML = simulatedChats.map(chat => `
+        <div class="chat-list-item ${chat.urgent ? 'urgent' : ''}" onclick="openProfessionalChat('${chat.id}')">
+          <div class="chat-list-header">
+            <span class="chat-list-name">
+              ${chat.childName}
+              ${chat.urgent ? '<span class="urgent-badge">URGENTE</span>' : ''}
+            </span>
+            <span class="chat-list-time">${chat.time}</span>
+          </div>
+          <p class="chat-list-preview">${chat.lastMessage}</p>
+        </div>
+      `).join('');
+    }
+
+    // Open professional chat
+    function openProfessionalChat(chatId) {
+      currentChatId = chatId;
+      const chat = simulatedChats.find(c => c.id === chatId);
+      
+      if (!chat) return;
+
+      document.getElementById('attendChatName').textContent = '👤 ' + chat.childName;
+      
+      const messagesContainer = document.getElementById('attendChatMessages');
+      messagesContainer.innerHTML = chat.messages.map(msg => `
+        <div class="message ${msg.role === 'child' ? 'user' : 'bot'}">
+          ${msg.content}
+        </div>
+      `).join('');
+
+      showScreen('screen-attend-chat');
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Handle professional chat form
+    document.getElementById('attendChatForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const input = document.getElementById('attendChatInput');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      const messagesContainer = document.getElementById('attendChatMessages');
+      
+      // Add professional message
+      const profMsg = document.createElement('div');
+      profMsg.className = 'message bot';
+      profMsg.textContent = message;
+      messagesContainer.appendChild(profMsg);
+      
+      input.value = '';
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      // Simulate child response
+      setTimeout(() => {
+        const childMsg = document.createElement('div');
+        childMsg.className = 'message user';
+        childMsg.textContent = 'Obrigado por me ouvir...';
+        messagesContainer.appendChild(childMsg);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 2000);
+    });
+
+    // Emergency button handler - ALWAYS goes to chat
+    function handleEmergency() {
+      showScreen('screen-chat');
+    }
+
+    // Quiz functions
+    function startQuiz(quizType) {
+      currentQuiz = quizzes[quizType];
+      currentQuestion = 0;
+      quizScore = 0;
+      
+      document.getElementById('quizTitle').textContent = currentQuiz.title;
+      loadQuestion();
+      showScreen('screen-quiz');
+    }
+
+    function loadQuestion() {
+      if (currentQuestion >= currentQuiz.questions.length) {
+        showScore();
+        return;
+      }
+
+      const question = currentQuiz.questions[currentQuestion];
+      document.getElementById('questionText').textContent = question.question;
+      
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = question.options.map((option, index) => `
+        <button class="option-btn" onclick="checkAnswer(${index})">${option}</button>
+      `).join('');
+    }
+
+    function checkAnswer(selectedIndex) {
+      const question = currentQuiz.questions[currentQuestion];
+      const buttons = document.querySelectorAll('.option-btn');
+      
+      buttons.forEach((btn, index) => {
+        btn.disabled = true;
+        if (index === question.correct) {
+          btn.classList.add('correct');
+        } else if (index === selectedIndex && selectedIndex !== question.correct) {
+          btn.classList.add('incorrect');
+        }
+      });
+
+      if (selectedIndex === question.correct) {
+        quizScore++;
+      }
+
+      setTimeout(() => {
+        currentQuestion++;
+        loadQuestion();
+      }, 1500);
+    }
+
+    function showScore() {
+      const total = currentQuiz.questions.length;
+      const percentage = (quizScore / total) * 100;
+      
+      document.getElementById('scoreText').textContent = `${quizScore}/${total}`;
+      
+      let message = '';
+      if (percentage === 100) {
+        message = '🎉 Perfeito! Você acertou todas!';
+      } else if (percentage >= 70) {
+        message = '😊 Muito bem! Continue aprendendo!';
+      } else {
+        message = '💪 Continue praticando, você vai melhorar!';
+      }
+      
+      document.getElementById('scoreMessage').textContent = message;
+      showScreen('screen-score');
+    }
+
+    // Place functions
+    function showPlace(placeId) {
+      currentPlace = places[placeId];
+      
+      document.getElementById('placeDetailTitle').textContent = currentPlace.name;
+      document.getElementById('placeName').textContent = currentPlace.name;
+      document.getElementById('placeAddress').textContent = currentPlace.address;
+      document.getElementById('placePhone').textContent = currentPlace.phone;
+      document.getElementById('placeHours').textContent = currentPlace.hours;
+      
+      showScreen('screen-place-details');
+    }
+
+    function showRoute() {
+      showScreen('screen-route');
+    }
+
+    // Chat state
+    let conversationHistory = [];
+    let isHumanAttendant = false;
+    let messageCount = 0;
+
+    // Chat functions
+    function sendChatOption(option) {
+      const messagesContainer = document.getElementById('chatMessages');
+      
+      // Add user message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'message user';
+      userMsg.textContent = option;
+      messagesContainer.appendChild(userMsg);
+      
+      // Add bot response
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'message bot';
+        
+        if (option.includes('violência')) {
+          botMsg.textContent = 'Sinais de violência incluem: machucados inexplicáveis, medo de adultos, mudanças de comportamento repentinas. Se você perceber isso, converse com um adulto de confiança.';
+        } else if (option.includes('direitos')) {
+          botMsg.textContent = 'Você tem direito à educação, saúde, alimentação, moradia, proteção contra violência e muito mais! Jogue o quiz sobre direitos para aprender mais!';
+        } else if (option.includes('ajuda')) {
+          botMsg.textContent = 'Estou aqui para te ajudar! Você pode usar o mapa para encontrar locais de apoio próximos. Lembre-se: você não está sozinho(a)!';
+        }
+        
+        messagesContainer.appendChild(botMsg);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 800);
+      
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Start conversation mode
+    function startConversation() {
+      conversationHistory = [];
+      isHumanAttendant = false;
+      messageCount = 0;
+      showScreen('screen-chat-conversation');
+    }
+
+    // Back to chat menu
+    function backToChat() {
+      conversationHistory = [];
+      isHumanAttendant = false;
+      messageCount = 0;
+      
+      // Reset conversation messages
+      const conversationMessages = document.getElementById('conversationMessages');
+      conversationMessages.innerHTML = `
+        <div class="message bot">
+          Olá! Pode me contar o que está acontecendo. Estou aqui para ouvir você. 😊
+        </div>
+      `;
+      
+      // Hide human attendant banner
+      document.getElementById('humanAttendantBanner').style.display = 'none';
+      
+      showScreen('screen-chat');
+    }
+
+    // Detect if message indicates violence
+    function detectViolence(message) {
+      const violenceKeywords = [
+        'machucado', 'machucada', 'dor', 'bater', 'bateu', 'apanhar', 
+        'violência', 'violento', 'medo', 'assustado', 'assustada',
+        'abuso', 'tocou', 'tocar', 'desconfortável', 'ajuda urgente',
+        'perigo', 'ameaça', 'sofrer', 'sofrendo', 'maltrato'
+      ];
+      
+      const lowerMessage = message.toLowerCase();
+      return violenceKeywords.some(keyword => lowerMessage.includes(keyword));
+    }
+
+    // Get bot response
+    function getBotResponse(userMessage) {
+      const lowerMessage = userMessage.toLowerCase();
+      
+      // Predefined responses
+      if (lowerMessage.includes('oi') || lowerMessage.includes('olá')) {
+        return 'Olá! Estou aqui para te ajudar. Pode me contar o que está acontecendo?';
+      } else if (lowerMessage.includes('direitos')) {
+        return 'Toda criança e adolescente tem direitos fundamentais: à vida, saúde, educação, proteção contra violência e muito mais! Quer saber mais sobre algum direito específico?';
+      } else if (lowerMessage.includes('escola')) {
+        return 'A educação é um direito de todas as crianças. Se você está tendo problemas na escola, podemos te ajudar a encontrar apoio.';
+      } else if (lowerMessage.includes('família')) {
+        return 'A família é importante, mas toda criança tem o direito de viver em um ambiente seguro e saudável. Se algo não está bem, você pode me contar.';
+      } else if (lowerMessage.includes('amigo')) {
+        return 'Os amigos são muito importantes! Se algum amigo está passando por dificuldades, você pode ajudá-lo falando com um adulto de confiança.';
+      } else if (lowerMessage.includes('sozinho') || lowerMessage.includes('sozinha')) {
+        return 'Você nunca está sozinho(a). Existem muitas pessoas e profissionais prontos para te ajudar. Quer que eu mostre os locais de apoio próximos?';
+      } else {
+        return 'Entendo. Pode me contar mais detalhes? Estou aqui para te ouvir e ajudar no que for possível.';
+      }
+    }
+
+    // Add typing indicator
+    function showTypingIndicator(container) {
+      const typing = document.createElement('div');
+      typing.className = 'typing-indicator';
+      typing.id = 'typingIndicator';
+      typing.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      `;
+      container.appendChild(typing);
+      container.scrollTop = container.scrollHeight;
+      return typing;
+    }
+
+    // Handle chat form submission (Tela 7.2)
+    document.getElementById('chatForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      const messagesContainer = document.getElementById('conversationMessages');
+      
+      // Add user message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'message user';
+      userMsg.textContent = message;
+      messagesContainer.appendChild(userMsg);
+      
+      conversationHistory.push({ role: 'user', content: message });
+      messageCount++;
+      
+      input.value = '';
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      // Check for violence keywords
+      const hasViolence = detectViolence(message);
+      
+      // Show typing indicator
+      const typing = showTypingIndicator(messagesContainer);
+      
+      setTimeout(() => {
+        // Remove typing indicator
+        typing.remove();
+        
+        if (hasViolence && messageCount >= 2 && !isHumanAttendant) {
+          // Show transfer message
+          const transferMsg = document.createElement('div');
+          transferMsg.className = 'message bot';
+          transferMsg.innerHTML = '🚨 Percebi que você pode estar em uma situação delicada. Vou te conectar com um <strong>atendente humano</strong> que pode te ajudar melhor. Um momento...';
+          messagesContainer.appendChild(transferMsg);
+          
+          // Show human attendant banner
+          document.getElementById('humanAttendantBanner').style.display = 'flex';
+          
+          setTimeout(() => {
+            const humanMsg = document.createElement('div');
+            humanMsg.className = 'message bot';
+            humanMsg.textContent = '👤 Profissional conectado! Olá, sou um profissional especializado. Li a conversa anterior. Pode me contar mais detalhes, estou aqui para te ajudar.';
+            messagesContainer.appendChild(humanMsg);
+            isHumanAttendant = true;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          }, 2000);
+          
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        } else {
+          // Regular bot response
+          const botMsg = document.createElement('div');
+          botMsg.className = 'message bot';
+          botMsg.textContent = getBotResponse(message);
+          messagesContainer.appendChild(botMsg);
+          conversationHistory.push({ role: 'bot', content: botMsg.textContent });
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+      }, 1000);
+    });
+
+    // Initialize app when ready
+    initApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a3c116d70d5cad7',t:'MTc2NDAyMDQ2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
