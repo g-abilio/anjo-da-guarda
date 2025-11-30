@@ -59,6 +59,7 @@
       padding: 20px;
       text-align: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative;
     }
 
     .header h1 {
@@ -964,6 +965,7 @@
     <div class="header">
      <h1>🏠 Início</h1>
      <p id="welcomeText">Bem-vindo, usuário!</p>
+     <button class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 16px; font-size: 14px;" onclick="logout()">Logout</button>
     </div>
     <div class="content">
      <div style="text-align: center; padding: 40px 20px;">
@@ -2023,6 +2025,11 @@
         }
       }, 1000);
     });
+
+    function logout() {
+      currentUser = null;
+      showScreen('screen-login');
+    }
 
     // Initialize app when ready
     initApp();
