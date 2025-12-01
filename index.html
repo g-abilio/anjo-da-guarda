@@ -1123,28 +1123,44 @@
      </div>
     </div>
    </div><!-- Tela 6.0: Jogos -->
-   <div id="screen-games" class="screen">
-    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
-     <h1>🎮 Jogos Educativos</h1>
-     <p>Aprenda brincando</p>
+<div id="screen-games" class="screen">
+    <div class="header" style="position: relative;">
+        <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+        <h1>🎮 Jogos e Quizzes</h1>
+        <p>Aprenda brincando!</p>
     </div>
+
     <div class="content">
-     <p style="text-align: center; margin-bottom: 24px; color: #666;">Escolha um jogo para aprender sobre seus direitos e proteção!</p>
-     <div class="games-grid"> <div class="game-card" onclick="startQuiz('rights')">
-       <div class="icon">🏆</div>
-       <h3>Quiz de Direitos</h3> </div> <div class="game-card" onclick="startQuiz('safety')">
-       <div class="icon">🛡️</div>
-       <h3>Quiz de Segurança</h3> </div> <div class="game-card">
-       <div class="icon">🧩</div>
-       <h3>Jogo da Memória (Em breve)</h3> </div> <div class="game-card">
-       <div class="icon">🎯</div>
-       <h3>Quebra-Cabeça (Em breve)</h3> </div> </div>
+        <div class="games-grid" style="margin-top: 20px; grid-template-columns: 1fr 1fr;">
+            
+            <div class="game-card" onclick="startQuiz('meusDireitos')">
+                <div class="icon" style="font-size: 60px;">📚</div>
+                <h3>Meus Direitos</h3>
+            </div>
+
+            <div class="game-card" onclick="startQuiz('prevencao')">
+                <div class="icon" style="font-size: 60px;">🛡️</div>
+                <h3>Prevenção</h3>
+            </div>
+
+            <div class="game-card" onclick="startQuiz('seguranca')">
+                <div class="icon" style="font-size: 60px;">🔒</div>
+                <h3>Segurança</h3>
+            </div>
+
+            <div class="game-card" onclick="startQuiz('pedirAjuda')">
+                <div class="icon" style="font-size: 60px;">🆘</div>
+                <h3>Pedir Ajuda</h3>
+            </div>
+
+        </div>
     </div>
-   </div><!-- Tela 6.1: Quiz -->
+</div>
+<!-- Tela 6.1: Quiz -->
    <div id="screen-quiz" class="screen">
     <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-games')">←</button>
      <h1 id="quizTitle">Quiz</h1>
-     <p>Responda as perguntas</p>
+     <p>Leia a pergunta e clique na opção que considerar correta!</p>
     </div>
     <div class="content quiz-container">
      <div class="question-box">
@@ -1168,7 +1184,7 @@
    </div><!-- Tela 7.0: Chat Inicial -->
    <div id="screen-chat" class="screen">
     <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
-     <h1>💬 Chat de Apoio</h1>
+     <h1>💬 Anjo da Guarda</h1>
      <p>Converse com nosso assistente</p>
     </div>
     <div class="content chat-container">
@@ -1183,8 +1199,8 @@
      <strong>Atendente Humano Conectado</strong> <span>Estamos aqui para te ajudar</span>
     </div>
     <div class="header" style="position: relative;"><button class="back-btn" onclick="backToChat()">←</button>
-     <h1>💬 Conversa</h1>
-     <p>Fale com o assistente</p>
+     <h1>💬 Anjo da Guarda</h1>
+     <p>Converse com nosso assistente</p>
     </div>
     <div class="content chat-container">
      <div class="chat-messages" id="conversationMessages"></div>
@@ -1256,37 +1272,113 @@
     };
 
     const quizzes = {
-      'rights': {
-        title: 'Quiz de Direitos da Criança',
+
+    meusDireitos: {
+        title: "Meus Direitos",
         questions: [
-          {
-            question: 'Qual é o direito principal da criança?',
-            options: ['Brincar o dia todo', 'Receber educação', 'Ter muitos brinquedos', 'Assistir TV'],
-            correct: 1
-          },
-          {
-            question: 'Crianças têm direito à:',
-            options: ['Trabalhar', 'Proteção contra violência', 'Dirigir carro', 'Votar'],
-            correct: 1
-          }
+            {
+                question: "Toda criança tem direito a…",
+                options: [
+                    "Ter uma vida segura e protegida",
+                    "Fazer tudo sempre sozinha",
+                    "Nunca ir à escola",
+                    "Trabalhar desde pequena"
+                ],
+                correct: 0
+            },
+            {
+                question: "Qual documento protege os direitos das crianças?",
+                options: [
+                    "A Constituição Federal",
+                    "As regras da escola",
+                    "O contrato de videogame",
+                    "O caderno de provas"
+                ],
+                correct: 0
+            }
         ]
-      },
-      'safety': {
-        title: 'Quiz de Segurança',
+    },
+
+    prevencao: {
+        title: "Prevenção",
         questions: [
-          {
-            question: 'O que fazer se alguém te machucar?',
-            options: ['Ficar quieto', 'Contar para um adulto de confiança', 'Revida', 'Fugir para longe'],
-            correct: 1
-          },
-          {
-            question: 'É seguro aceitar doces de estranhos?',
-            options: ['Sim, sempre', 'Não, nunca', 'Só se for chocolate', 'Só se a mãe permitir'],
-            correct: 1
-          }
+            {
+                question: "Se um adulto pedir segredo sobre algo que te deixa desconfortável, você deve…",
+                options: [
+                    "Guardar o segredo",
+                    "Contar imediatamente a um adulto de confiança",
+                    "Fingir que nada aconteceu",
+                    "Pedir para o adulto repetir"
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual é um sinal de situação perigosa?",
+                options: [
+                    "Alguém te oferecer doces insistindo",
+                    "Brincar no parquinho",
+                    "Estar com amigos na escola",
+                    "Receber um elogio"
+                ],
+                correct: 0
+            }
         ]
-      }
-    };
+    },
+
+    seguranca: {
+        title: "Segurança",
+        questions: [
+            {
+                question: "Quem você deve procurar se estiver em perigo?",
+                options: [
+                    "Um adulto de confiança",
+                    "Qualquer pessoa desconhecida",
+                    "Ninguém, melhor ficar quieto",
+                    "Procura sozinho uma saída"
+                ],
+                correct: 0
+            },
+            {
+                question: "É seguro compartilhar informações pessoais na internet?",
+                options: [
+                    "Sim, sempre!",
+                    "Não, isso pode ser perigoso!",
+                    "Só com amigos virtuais",
+                    "Só com desconhecidos legais"
+                ],
+                correct: 1
+            }
+        ]
+    },
+
+    pedirAjuda: {
+        title: "Pedir Ajuda",
+        questions: [
+            {
+                question: "Quando você deve pedir ajuda?",
+                options: [
+                    "Sempre que estiver com medo ou machucado",
+                    "Somente se for algo muito grave",
+                    "Nunca, resolva tudo sozinho",
+                    "Somente quando alguém disser"
+                ],
+                correct: 0
+            },
+            {
+                question: "Quem pode te ajudar?",
+                options: [
+                    "Um adulto de confiança",
+                    "Qualquer pessoa na rua",
+                    "Apenas crianças mais velhas",
+                    "Ninguém"
+                ],
+                correct: 0
+            }
+        ]
+    }
+
+};
+
 
     const simulatedChats = [
       {
@@ -1407,10 +1499,6 @@
           <button class="nav-item active" onclick="showScreen('screen-home')">
             <span class="icon">🏠</span>
             <span class="label">Início</span>
-          </button>
-          <button class="nav-item" onclick="showScreen('screen-reports')">
-            <span class="icon">📋</span>
-            <span class="label">Processos</span>
           </button>
           <button class="nav-item" onclick="showScreen('screen-attend-list')">
             <span class="icon">👥</span>
@@ -1596,47 +1684,12 @@
       }
     });
 
-    // Sample reports for demonstration
-    const sampleReports = [
-      {
-        id: 'sample-1',
-        type: 'report',
-        userId: 'demo-user',
-        protocol: 'PRO-12345678',
-        violenceType: 'negligencia',
-        description: 'Criança sozinha em casa frequentemente',
-        date: '2024-01-15',
-        location: 'Rua das Acácias, 234 - Jardim Europa',
-        victimAge: '4-7',
-        status: 'analyzing',
-        createdAt: new Date('2024-01-15').toISOString()
-      },
-      {
-        id: 'sample-2',
-        type: 'report',
-        userId: 'demo-user',
-        protocol: 'PRO-87654321',
-        violenceType: 'fisica',
-        description: 'Criança com marcas de agressão',
-        date: '2024-01-10',
-        location: 'Av. Central, 567 - Centro',
-        victimAge: '8-12',
-        status: 'completed',
-        createdAt: new Date('2024-01-10').toISOString()
-      }
-    ];
-
     // Render reports list
     function renderReportsList(data) {
       const reportsList = document.getElementById('reportsList');
       if (!reportsList) return;
 
       let userReports = data.filter(item => item.type === 'report' && (currentUser.profile === 'professional' || item.userId === currentUser.userId));
-
-      // Add sample reports if user is parent/citizen and no reports exist
-      if (currentUser.profile === 'parent' && userReports.length === 0) {
-        userReports = sampleReports;
-      }
 
       if (userReports.length === 0) {
         reportsList.innerHTML = `
