@@ -1382,17 +1382,17 @@
       document.querySelector('[onclick="showScreen(\'screen-home\')"]').style.display = 'block';
 
       if (profile === 'child') {
-        document.getElementById('homeInstructions').textContent = 'Aqui você pode jogar, ver o mapa e conversar com o assistente. Se precisar de ajuda urgente, clique no botão vermelho!';
+        document.getElementById('homeInstructions').textContent = 'Use o menu abaixo para acessar as funcionalidades do sistema. Em caso de emergência, clique no botão vermelho.';
         document.getElementById('navChat').style.display = 'block';
         document.getElementById('navMap').style.display = 'block';
         document.getElementById('navGames').style.display = 'block';
       } else if (profile === 'parent') {
-        document.getElementById('homeInstructions').textContent = 'Faça denúncias, acompanhe processos e encontre apoio no mapa. Use o botão de emergência para chat rápido.';
+        document.getElementById('homeInstructions').textContent = 'Use o menu abaixo para acessar as funcionalidades do sistema.';
         document.getElementById('navReport').style.display = 'block';
         document.getElementById('navReports').style.display = 'block';
         document.getElementById('navMap').style.display = 'block';
       } else if (profile === 'professional') {
-        document.getElementById('homeInstructions').textContent = 'Acompanhe denúncias e atenda chats de crianças. O botão de emergência acessa o chat geral.';
+        document.getElementById('homeInstructions').textContent = 'Use o menu abaixo para acessar o atendimento às crianças.';
         document.getElementById('navReports').style.display = 'block';
         document.getElementById('navChat').style.display = 'none'; // Profissionais têm lista de atendimentos separada
       }
