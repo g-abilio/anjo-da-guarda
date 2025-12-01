@@ -59,6 +59,7 @@
       padding: 20px;
       text-align: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative;
     }
 
     .header h1 {
@@ -933,15 +934,38 @@
       </div>
       <div class="form-group"><label for="password">Senha</label> <input type="password" id="password" placeholder="Digite sua senha" required>
       </div><button type="submit" class="btn btn-primary">Fazer Login</button>
-      <div style="margin-top: 12px; padding: 12px; background: #f0f0f0; border-radius: 8px; font-size: 13px;"><strong>👶 Criança:</strong> crianca@teste.com<br><strong>👨‍👩‍👧 Pai/Cidadão:</strong> pai@teste.com<br><strong>👮 Rede de Proteção:</strong> profissional@teste.com
-      </div>
+      <button type="button" class="btn btn-secondary" id="createAccountBtn" style="margin-top: 12px;">Criar Conta</button>
+      <div id="loginError" style="color: red; text-align: center; margin-top: 12px;"></div>
      </form>
     </div>
-   </div><!-- Tela 2.0: Home -->
+   </div>
+   
+   <!-- Tela de Registro -->
+   <div id="screen-register" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-login')">←</button>
+     <h1>📝 Criar Conta</h1>
+     <p>Crie sua conta para acessar o sistema</p>
+    </div>
+    <div class="content">
+     <form class="login-form" id="registerForm">
+      <div class="form-group"><label for="regEmail">Email</label> <input type="email" id="regEmail" placeholder="Digite seu email" required>
+      </div>
+      <div class="form-group"><label for="regPassword">Senha</label> <input type="password" id="regPassword" placeholder="Digite sua senha" required>
+      </div>
+      <div class="form-group"><label for="userType">Tipo de Usuário</label> <select id="userType" required> <option value="">Selecione</option> <option value="child">Criança</option> <option value="parent">Pai/Cidadão</option> <option value="professional">Profissional</option> </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Criar Conta</button>
+      <div id="registerError" style="color: red; text-align: center; margin-top: 12px;"></div>
+     </form>
+    </div>
+   </div>
+   
+<!-- Tela 2.0: Home -->
    <div id="screen-home" class="screen">
     <div class="header">
      <h1>🏠 Início</h1>
      <p id="welcomeText">Bem-vindo, usuário!</p>
+     <button class="btn btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 16px; font-size: 14px;" onclick="logout()">Logout</button>
     </div>
     <div class="content">
      <div style="text-align: center; padding: 40px 20px;">
@@ -951,7 +975,7 @@
       <h2 style="margin: 0 0 12px 0; color: #333;">Anjo da Guarda</h2>
       <p id="homeInstructions" style="margin: 0; color: #666; font-size: 16px; line-height: 1.6;">Use o menu abaixo para acessar as funcionalidades do sistema. Em caso de emergência, clique no botão vermelho.</p>
      </div>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
+    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()" style="display: none;">🚨</button>
     <nav class="nav-bottom" id="mainNavigation"><button class="nav-item active" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item" id="navReport" onclick="showScreen('screen-report')" style="display: none;"> <span class="icon">📝</span> <span class="label">Denúncia</span> </button> <button class="nav-item" id="navReports" onclick="showScreen('screen-reports')" style="display: none;"> <span class="icon">📋</span> <span class="label">Processos</span> </button> <button class="nav-item" id="navChat" onclick="showScreen('screen-chat')" style="display: none;"> <span class="icon">💬</span> <span class="label">Chat</span> </button> <button class="nav-item" id="navMap" onclick="showScreen('screen-map')" style="display: none;"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button> <button class="nav-item" id="navGames" onclick="showScreen('screen-games')" style="display: none;"> <span class="icon">🎮</span> <span class="label">Jogos</span> </button>
     </nav>
    </div><!-- Tela 3.1: Formulário de Denúncia -->
@@ -974,645 +998,519 @@
       </div>
       <div class="form-group"><label for="victimAge">Faixa Etária da Vítima</label> <select id="victimAge" required> <option value="">Selecione</option> <option value="0-3">0 a 3 anos</option> <option value="4-7">4 a 7 anos</option> <option value="8-12">8 a 12 anos</option> <option value="13-17">13 a 17 anos</option> </select>
       </div>
-      <div class="form-group"><label for="victimGender">Gênero da Vítima</label> <select id="victimGender" required> <option value="">Selecione</option> <option value="feminino">Feminino</option> <option value="masculino">Masculino</option> <option value="outro">Outro</option> <option value="nao-informar">Prefiro não informar</option> </select>
+      <div class="form-group"><label for="victimGender">Gênero da Vítima</label> <select id="victimGender" required> <option value="">Selecione</option> <option value="masculino">Masculino</option> <option value="feminino">Feminino</option> <option value="outro">Outro</option> </select>
       </div>
-      <div class="form-group"><label for="relationshipVictim">Relação com a Vítima</label> <select id="relationshipVictim" required> <option value="">Selecione</option> <option value="pai-mae">Pai/Mãe</option> <option value="familiar">Familiar</option> <option value="vizinho">Vizinho</option> <option value="professor">Professor/Educador</option> <option value="profissional">Profissional da Saúde</option> <option value="desconhecido">Não conheço</option> <option value="outro">Outro</option> </select>
+      <div class="form-group"><label for="relationshipVictim">Seu relacionamento com a vítima</label> <select id="relationshipVictim" required> <option value="">Selecione</option> <option value="pai">Pai/Mãe</option> <option value="familiar">Familiar</option> <option value="amigo">Amigo</option> <option value="vizinho">Vizinho</option> <option value="professor">Professor</option> <option value="outro">Outro</option> </select>
       </div>
-      <div class="form-group"><label for="aggressorName">Nome do Agressor (se souber)</label> <input type="text" id="aggressorName" placeholder="Nome ou identificação">
+      <div class="form-group"><label for="aggressorName">Nome do Agressor (se souber)</label> <input type="text" id="aggressorName" placeholder="Nome completo ou apelido">
       </div>
-      <div class="form-group"><label for="aggressorRelation">Relação do Agressor com a Vítima</label> <select id="aggressorRelation"> <option value="">Selecione (se souber)</option> <option value="pai-mae">Pai/Mãe</option> <option value="padrasto-madrasta">Padrasto/Madrasta</option> <option value="familiar">Outro Familiar</option> <option value="conhecido">Conhecido da Família</option> <option value="desconhecido">Desconhecido</option> <option value="outro">Outro</option> </select>
+      <div class="form-group"><label for="aggressorRelation">Relação do agressor com a vítima</label> <select id="aggressorRelation" required> <option value="">Selecione</option> <option value="pai">Pai/Mãe</option> <option value="familiar">Familiar</option> <option value="amigo">Amigo</option> <option value="vizinho">Vizinho</option> <option value="professor">Professor</option> <option value="desconhecido">Desconhecido</option> <option value="outro">Outro</option> </select>
       </div>
-      <div class="checkbox-group"><input type="checkbox" id="livesTogether"> <label for="livesTogether">O agressor mora com a vítima?</label>
+      <div class="checkbox-group"><input type="checkbox" id="livesTogether"> <label for="livesTogether">Vítima mora com o agressor?</label>
       </div>
-      <div class="checkbox-group"><input type="checkbox" id="anonymous"> <label for="anonymous">Enviar denúncia de forma anônima</label>
+      <div class="checkbox-group"><input type="checkbox" id="anonymous"> <label for="anonymous">Denúncia anônima</label>
       </div><button type="submit" class="btn btn-primary" id="submitReportBtn"> <span id="submitReportText">Enviar Denúncia</span> </button>
      </form>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-    <nav class="nav-bottom"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item active" onclick="showScreen('screen-report')"> <span class="icon">📝</span> <span class="label">Denúncia</span> </button> <button class="nav-item" onclick="showScreen('screen-reports')"> <span class="icon">📋</span> <span class="label">Processos</span> </button> <button class="nav-item" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button>
-    </nav>
-   </div><!-- Tela 3.2: Confirmação -->
+    </div>
+   </div><!-- Tela 3.2: Confirmação de Denúncia -->
    <div id="screen-confirmation" class="screen">
-    <div class="header" style="position: relative;">
-     <h1>✅ Denúncia Enviada</h1>
-     <p>Sua denúncia foi registrada com sucesso</p>
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
+     <h1>✅ Denúncia Registrada</h1>
+     <p>Seu protocolo foi gerado com sucesso</p>
     </div>
     <div class="content">
      <div class="success-box">
-      <div class="icon">
-       ✅
-      </div>
-      <h2>Denúncia Registrada!</h2>
-      <p>Seu protocolo para acompanhamento:</p>
-      <div class="protocol" id="protocolNumber">
-       -
-      </div>
-      <p style="font-size: 14px; color: #666;">Guarde este número para acompanhar sua denúncia</p>
-     </div><button class="btn btn-primary" onclick="showScreen('screen-reports')" style="width: 100%; margin-bottom: 12px;"> Ver Minhas Denúncias </button> <button class="btn btn-secondary" onclick="showScreen('screen-home')" style="width: 100%;"> Voltar ao Início </button>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-   </div><!-- Tela 4.1: Minhas Denúncias -->
+      <div class="icon">✅</div>
+      <h2>Denúncia Enviada</h2>
+      <p>Protocolo:</p>
+      <div class="protocol" id="protocolNumber">PRO-XXXXXXXX</div>
+      <p>Você pode acompanhar o status na seção de Processos.</p>
+     </div><button class="btn btn-primary" onclick="showScreen('screen-reports')">Ver Meus Processos</button> <button class="btn btn-secondary" style="margin-top: 12px;" onclick="showScreen('screen-home')">Voltar ao Início</button>
+    </div>
+   </div><!-- Tela 4.0: Lista de Processos -->
    <div id="screen-reports" class="screen">
     <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
-     <h1>📋 Processos</h1>
+     <h1>📋 Meus Processos</h1>
      <p>Acompanhe o status das denúncias</p>
     </div>
     <div class="content">
-     <div id="reportsList" class="reports-list"><!-- Reports will be dynamically added here -->
-     </div>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-    <nav class="nav-bottom" id="reportsNav"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item" onclick="showScreen('screen-report')"> <span class="icon">📝</span> <span class="label">Denúncia</span> </button> <button class="nav-item active" onclick="showScreen('screen-reports')"> <span class="icon">📋</span> <span class="label">Processos</span> </button> <button class="nav-item" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button>
-    </nav>
-   </div><!-- Tela 5.1: Catálogo de Jogos -->
-   <div id="screen-games" class="screen">
-    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
-     <h1>🎮 Jogos e Quizzes</h1>
-     <p>Aprenda brincando!</p>
+     <div id="reportsList" class="reports-list"></div>
     </div>
-    <div class="content">
-     <div class="games-grid">
-      <div class="game-card" onclick="startQuiz('rights')">
-       <div class="icon">
-        📚
-       </div>
-       <h3>Meus Direitos</h3>
-      </div>
-      <div class="game-card" onclick="startQuiz('prevention')">
-       <div class="icon">
-        🛡️
-       </div>
-       <h3>Prevenção</h3>
-      </div>
-      <div class="game-card" onclick="startQuiz('safety')">
-       <div class="icon">
-        🔒
-       </div>
-       <h3>Segurança</h3>
-      </div>
-      <div class="game-card" onclick="startQuiz('help')">
-       <div class="icon">
-        🆘
-       </div>
-       <h3>Pedir Ajuda</h3>
-      </div>
-     </div>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-    <nav class="nav-bottom"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item" onclick="showScreen('screen-chat')"> <span class="icon">💬</span> <span class="label">Chat</span> </button> <button class="nav-item" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button> <button class="nav-item active" onclick="showScreen('screen-games')"> <span class="icon">🎮</span> <span class="label">Jogos</span> </button>
-    </nav>
-   </div><!-- Tela 5.2: Quiz -->
-   <div id="screen-quiz" class="screen">
-    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-games')">←</button>
-     <h1 id="quizTitle">Quiz</h1>
-     <p>Responda as perguntas</p>
-    </div>
-    <div class="content">
-     <div class="quiz-container">
-      <div class="question-box">
-       <h2 id="questionText">Carregando pergunta...</h2>
-       <div class="options" id="optionsContainer"><!-- Options will be added here -->
-       </div>
-      </div>
-     </div>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-   </div><!-- Tela 5.3: Resultado -->
-   <div id="screen-score" class="screen">
-    <div class="header">
-     <h1>🏆 Resultado</h1>
-     <p>Veja como você se saiu!</p>
-    </div>
-    <div class="content">
-     <div class="score-display">
-      <div class="icon">
-       🎉
-      </div>
-      <h2 id="scoreText">0/0</h2>
-      <p id="scoreMessage">Parabéns!</p><button class="btn btn-primary" onclick="showScreen('screen-games')" style="margin-bottom: 12px;"> Voltar aos Jogos </button> <button class="btn btn-secondary" onclick="showScreen('screen-home')"> Ir para o Início </button>
-     </div>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-   </div><!-- Tela 6.1: Mapa -->
+   </div><!-- Tela 5.0: Mapa -->
    <div id="screen-map" class="screen">
     <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
-     <h1>🗺️ Pontos de Apoio</h1>
-     <p>Locais próximos para ajuda</p>
+     <h1>🗺️ Mapa de Apoio</h1>
+     <p>Encontre locais de ajuda próximos</p>
     </div>
     <div class="content">
      <div class="map-container">
-      <div style="text-align: center;">
-       <div style="font-size: 64px; margin-bottom: 12px;">
-        🗺️
-       </div>
-       <p style="margin: 0; color: #666;">Mapa Interativo</p>
-      </div>
-      <div class="map-markers">
-       <div class="map-marker" style="top: 30%; left: 40%;" onclick="showPlace('ct1')">
-        📍
-       </div>
-       <div class="map-marker" style="top: 60%; left: 60%;" onclick="showPlace('ong1')">
-        📍
-       </div>
-       <div class="map-marker" style="top: 45%; left: 70%;" onclick="showPlace('hospital1')">
-        📍
-       </div>
-      </div>
+      <div class="map-markers"> <span class="map-marker" style="left: 20%; top: 40%;" onclick="showPlace('delegacia')">👮</span> <span class="map-marker" style="left: 60%; top: 30%;" onclick="showPlace('hospital')">🏥</span> <span class="map-marker" style="left: 40%; top: 70%;" onclick="showPlace('conselho')">🏛️</span> <span class="map-marker" style="left: 80%; top: 50%;" onclick="showPlace('cras')">🏠</span> </div>
      </div>
-     <h3 style="margin: 0 0 16px 0; color: #333;">Locais Próximos</h3>
-     <div class="places-list">
-      <div class="place-item" onclick="showPlace('ct1')">
+     <div class="places-list"> <div class="place-item" onclick="showPlace('delegacia')">
        <div class="place-header">
-        <div class="place-icon">
-         🏛️
-        </div>
+        <span class="place-icon">👮</span>
         <div class="place-info">
-         <h3>Conselho Tutelar Centro</h3>
-         <p>Rua das Flores, 123 - 1.2 km</p>
+         <h3>Delegacia Especializada</h3>
+         <p>Proteção à Criança</p>
         </div>
-       </div>
-      </div>
-      <div class="place-item" onclick="showPlace('ong1')">
+       </div> </div> <div class="place-item" onclick="showPlace('hospital')">
        <div class="place-header">
-        <div class="place-icon">
-         🤝
-        </div>
+        <span class="place-icon">🏥</span>
         <div class="place-info">
-         <h3>ONG Proteção Infantil</h3>
-         <p>Av. Principal, 456 - 2.5 km</p>
+         <h3>Hospital Infantil</h3>
+         <p>Atendimento Médico</p>
         </div>
-       </div>
-      </div>
-      <div class="place-item" onclick="showPlace('hospital1')">
+       </div> </div> <div class="place-item" onclick="showPlace('conselho')">
        <div class="place-header">
-        <div class="place-icon">
-         🏥
-        </div>
+        <span class="place-icon">🏛️</span>
         <div class="place-info">
-         <h3>Hospital Municipal</h3>
-         <p>Rua da Saúde, 789 - 3.1 km</p>
+         <h3>Conselho Tutelar</h3>
+         <p>Defesa de Direitos</p>
         </div>
-       </div>
-      </div>
-     </div>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-    <nav class="nav-bottom" id = "mapNav"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item" onclick="showScreen('screen-chat')"> <span class="icon">💬</span> <span class="label">Chat</span> </button> <button class="nav-item active" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button> <button class="nav-item" onclick="showScreen('screen-games')"> <span class="icon">🎮</span> <span class="label">Jogos</span> </button>
-    </nav>
-   </div><!-- Tela 6.2: Detalhes do Local -->
+       </div> </div> <div class="place-item" onclick="showPlace('cras')">
+       <div class="place-header">
+        <span class="place-icon">🏠</span>
+        <div class="place-info">
+         <h3>CRAS</h3>
+         <p>Apoio Social</p>
+        </div>
+       </div> </div> </div>
+    </div>
+    <nav class="nav-bottom" id="mapNav"></nav>
+   </div><!-- Tela 5.1: Detalhes do Local -->
    <div id="screen-place-details" class="screen">
     <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-map')">←</button>
-     <h1 id="placeDetailTitle">Local</h1>
-     <p>Informações de contato</p>
+     <h1 id="placeDetailTitle">Detalhes do Local</h1>
+     <p>Informações e rota</p>
     </div>
     <div class="content">
      <div class="place-details">
       <h2 id="placeName">Nome do Local</h2>
-      <div class="detail-row"><span class="icon">📍</span> <span class="text" id="placeAddress">Endereço</span>
-      </div>
-      <div class="detail-row"><span class="icon">📞</span> <span class="text" id="placePhone">Telefone</span>
-      </div>
-      <div class="detail-row"><span class="icon">🕐</span> <span class="text" id="placeHours">Horário</span>
-      </div>
-     </div><button class="btn btn-primary" onclick="showRoute()" style="width: 100%; margin-bottom: 12px;"> 📍 Solicitar Rota </button> <button class="btn btn-secondary" onclick="showScreen('screen-map')" style="width: 100%;"> Voltar ao Mapa </button>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-   </div><!-- Tela 6.3: Rota -->
+      <div class="detail-row"> <span class="icon">📍</span> <span class="text" id="placeAddress">Endereço completo</span> </div>
+      <div class="detail-row"> <span class="icon">📞</span> <span class="text" id="placePhone">(XX) XXXX-XXXX</span> </div>
+      <div class="detail-row"> <span class="icon">⏰</span> <span class="text" id="placeHours">Horário de funcionamento</span> </div>
+     </div><button class="btn btn-primary" onclick="showRoute()">Ver Rota</button>
+    </div>
+   </div><!-- Tela 5.2: Rota -->
    <div id="screen-route" class="screen">
     <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-place-details')">←</button>
-     <h1>🧭 Rota</h1>
-     <p>Siga as instruções abaixo</p>
+     <h1>🛣️ Rota para o Local</h1>
+     <p>Como chegar</p>
     </div>
     <div class="content">
      <div class="route-map">
-      <div class="icon">
-       🗺️
-      </div>
-      <h3 style="margin: 0; color: #666;">Visualização da Rota</h3>
-      <p style="margin: 8px 0 0 0; color: #999; font-size: 14px;">Distância: 1.2 km • Tempo: 15 min</p>
+      <div class="icon">🗺️</div>
+      <p>Rota simulada</p>
      </div>
      <div class="route-info">
-      <h3>Instruções:</h3>
+      <h3>Passos da Rota</h3>
       <div class="route-step">
-       <div class="step-number">
-        1
-       </div>
-       <div class="step-text">
-        Siga pela Rua Atual por 300m
-       </div>
+       <span class="step-number">1</span>
+       <span class="step-text">Saia de casa e vire à esquerda na rua principal</span>
       </div>
       <div class="route-step">
-       <div class="step-number">
-        2
-       </div>
-       <div class="step-text">
-        Vire à esquerda na Av. Principal
-       </div>
+       <span class="step-number">2</span>
+       <span class="step-text">Pegue o ônibus linha 123 direção centro</span>
       </div>
       <div class="route-step">
-       <div class="step-number">
-        3
-       </div>
-       <div class="step-text">
-        Continue por 800m até o destino
-       </div>
+       <span class="step-number">3</span>
+       <span class="step-text">Desça no ponto após o supermercado</span>
       </div>
-     </div><button class="btn btn-primary" onclick="showScreen('screen-map')" style="width: 100%; margin-top: 16px;"> Voltar ao Mapa </button>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-   </div><!-- Tela 7.1: Chat -->
+      <div class="route-step">
+       <span class="step-number">4</span>
+       <span class="step-text">Caminhe 200m à direita até o local</span>
+      </div>
+     </div>
+    </div>
+   </div><!-- Tela 6.0: Jogos -->
+<div id="screen-games" class="screen">
+    <div class="header" style="position: relative;">
+        <button class="back-btn" onclick="showScreen('screen-home')">←</button>
+        <h1>🎮 Jogos e Quizzes</h1>
+        <p>Aprenda brincando!</p>
+    </div>
+
+    <div class="content">
+        <div class="games-grid" style="margin-top: 20px; grid-template-columns: 1fr 1fr;">
+            
+            <div class="game-card" onclick="startQuiz('meusDireitos')">
+                <div class="icon" style="font-size: 60px;">📚</div>
+                <h3>Meus Direitos</h3>
+            </div>
+
+            <div class="game-card" onclick="startQuiz('prevencao')">
+                <div class="icon" style="font-size: 60px;">🛡️</div>
+                <h3>Prevenção</h3>
+            </div>
+
+            <div class="game-card" onclick="startQuiz('seguranca')">
+                <div class="icon" style="font-size: 60px;">🔒</div>
+                <h3>Segurança</h3>
+            </div>
+
+            <div class="game-card" onclick="startQuiz('pedirAjuda')">
+                <div class="icon" style="font-size: 60px;">🆘</div>
+                <h3>Pedir Ajuda</h3>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- Tela 6.1: Quiz -->
+   <div id="screen-quiz" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-games')">←</button>
+     <h1 id="quizTitle">Quiz</h1>
+     <p>Leia a pergunta e clique na opção que considerar correta!</p>
+    </div>
+    <div class="content quiz-container">
+     <div class="question-box">
+      <h2 id="questionText">Pergunta aqui</h2>
+      <div class="options" id="optionsContainer"></div>
+     </div>
+    </div>
+   </div><!-- Tela 6.2: Pontuação -->
+   <div id="screen-score" class="screen">
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-games')">←</button>
+     <h1>🏆 Pontuação</h1>
+     <p>Veja seu resultado</p>
+    </div>
+    <div class="content">
+     <div class="score-display">
+      <div class="icon">🎉</div>
+      <h2 id="scoreText">0/0</h2>
+      <p id="scoreMessage">Mensagem aqui</p><button class="btn btn-primary" onclick="showScreen('screen-games')">Jogar Novamente</button> <button class="btn btn-secondary" style="margin-top: 12px;" onclick="showScreen('screen-home')">Voltar ao Início</button>
+     </div>
+    </div>
+   </div><!-- Tela 7.0: Chat Inicial -->
    <div id="screen-chat" class="screen">
     <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
      <h1>💬 Anjo da Guarda</h1>
-     <p>Como posso ajudar?</p>
+     <p>Converse com nosso assistente</p>
     </div>
-    <div class="chat-container">
+    <div class="content chat-container">
      <div class="chat-messages" id="chatMessages">
-      <div class="message bot">
-       Olá! Eu sou o Anjo da Guarda! Estou aqui para te ajudar. O que você gostaria de saber?
-      </div>
+      <div class="message bot">Olá! Como posso te ajudar hoje? 😊</div>
      </div>
-     <div class="chat-options" id="chatOptions"><button class="chat-option-btn" onclick="sendChatOption('Sinais de violência')"> 🚨 Sinais de violência </button> <button class="chat-option-btn" onclick="sendChatOption('Meus direitos')"> 📚 Meus direitos </button> <button class="chat-option-btn" onclick="sendChatOption('Preciso de ajuda')"> 🆘 Preciso de ajuda </button> <button class="chat-option-btn" onclick="startConversation()"> 💬 Conversar livremente </button>
-     </div>
+     <div class="chat-options"> <button class="chat-option-btn" onclick="sendChatOption('O que é violência?')">O que é violência?</button> <button class="chat-option-btn" onclick="sendChatOption('Quais são meus direitos?')">Quais são meus direitos?</button> <button class="chat-option-btn" onclick="sendChatOption('Preciso de ajuda')">Preciso de ajuda</button> <button class="chat-option-btn" onclick="startConversation()">Quero conversar</button> </div>
     </div>
-    <nav class="nav-bottom" id="chatNav"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item active" onclick="showScreen('screen-chat')"> <span class="icon">💬</span> <span class="label">Chat</span> </button> <button class="nav-item" onclick="showScreen('screen-map')"> <span class="icon">🗺️</span> <span class="label">Mapa</span> </button> <button class="nav-item" onclick="showScreen('screen-games')"> <span class="icon">🎮</span> <span class="label">Jogos</span> </button>
-    </nav>
-   </div><!-- Tela 7.2: Chat - Conversa -->
+   </div><!-- Tela 7.1: Conversa -->
    <div id="screen-chat-conversation" class="screen">
-    <div class="header" style="position: relative;"><button class="back-btn" onclick="backToChat()">←</button>
-     <h1 id="chatConversationTitle">💬 Anjo da Guarda</h1>
-     <p id="chatConversationSubtitle">Conversa em andamento</p>
+    <div class="human-attendant-banner" id="humanAttendantBanner" style="display: none;">
+     <strong>Atendente Humano Conectado</strong> <span>Estamos aqui para te ajudar</span>
     </div>
-    <div class="chat-container">
-     <div id="humanAttendantBanner" class="human-attendant-banner" style="display: none;">
-      <div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 20px;">👤</span>
-       <div><strong>Atendente Humano Conectado</strong>
-        <p style="margin: 4px 0 0 0; font-size: 12px;">Você está falando com um profissional especializado</p>
-       </div>
-      </div>
-     </div>
-     <div class="chat-messages" id="conversationMessages">
-      <div class="message bot">
-       Olá! Pode me contar o que está acontecendo. Estou aqui para ouvir você. 😊
-      </div>
-     </div>
-     <div class="chat-input-container">
-      <form id="chatForm" class="chat-input-form"><input type="text" id="chatInput" class="chat-input" placeholder="Digite sua mensagem..." autocomplete="off"> <button type="submit" class="chat-send-btn"> <span style="font-size: 20px;">📤</span> </button>
-      </form>
-     </div>
-    </div><button class="emergency-btn" id="emergencyBtn" onclick="handleEmergency()">🚨</button>
-   </div><!-- Tela 8.0: Atendimento Profissional - Lista de Chats -->
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="backToChat()">←</button>
+     <h1>💬 Anjo da Guarda</h1>
+     <p>Converse com nosso assistente</p>
+    </div>
+    <div class="content chat-container">
+     <div class="chat-messages" id="conversationMessages"></div>
+    </div>
+    <div class="chat-input-container">
+     <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..."> <button type="submit" class="chat-send-btn">➤</button>
+     </form>
+    </div>
+   </div><!-- Tela 8.0: Lista de Atendimentos (Profissional) -->
    <div id="screen-attend-list" class="screen">
     <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-home')">←</button>
-     <h1>👥 Atendimento</h1>
-     <p>Crianças aguardando atendimento</p>
+     <h1>👥 Atendimentos</h1>
+     <p>Chats em andamento</p>
     </div>
     <div class="content">
-     <div id="chatListContainer"><!-- Chat items will be added here -->
-     </div>
+     <div id="chatListContainer"></div>
     </div>
-    <nav class="nav-bottom"><button class="nav-item" onclick="showScreen('screen-home')"> <span class="icon">🏠</span> <span class="label">Início</span> </button> <button class="nav-item active" onclick="showScreen('screen-attend-list')"> <span class="icon">👥</span> <span class="label">Atendimento</span> </button>
-    </nav>
-   </div><!-- Tela 8.1: Atendimento Profissional - Chat Individual -->
+   </div><!-- Tela 8.1: Chat de Atendimento (Profissional) -->
    <div id="screen-attend-chat" class="screen">
-    <div class="header" style="position: relative; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);"><button class="back-btn" onclick="showScreen('screen-attend-list')">←</button>
-     <h1 id="attendChatName">👤 Atendimento</h1>
-     <p id="attendChatStatus">Criança em situação de risco</p>
+    <div class="header" style="position: relative;"><button class="back-btn" onclick="showScreen('screen-attend-list')">←</button>
+     <h1 id="attendChatName">Chat</h1>
+     <p>Atendimento profissional</p>
     </div>
-    <div class="chat-container">
-     <div class="human-attendant-banner" style="display: flex;">
-      <div style="display: flex; align-items: center; gap: 8px;"><span style="font-size: 20px;">👮</span>
-       <div><strong>Modo Profissional Ativo</strong>
-        <p style="margin: 4px 0 0 0; font-size: 12px;">Você está atendendo uma criança</p>
-       </div>
-      </div>
-     </div>
-     <div class="chat-messages" id="attendChatMessages"><!-- Messages will be added here -->
-     </div>
-     <div class="chat-input-container">
-      <form id="attendChatForm" class="chat-input-form"><input type="text" id="attendChatInput" class="chat-input" placeholder="Digite sua mensagem..." autocomplete="off"> <button type="submit" class="chat-send-btn"> <span style="font-size: 20px;">📤</span> </button>
-      </form>
-     </div>
+    <div class="content chat-container">
+     <div class="chat-messages" id="attendChatMessages"></div>
+    </div>
+    <div class="chat-input-container">
+     <form class="chat-input-form" id="attendChatForm">
+      <input type="text" class="chat-input" id="attendChatInput" placeholder="Digite sua mensagem..."> <button type="submit" class="chat-send-btn">➤</button>
+     </form>
     </div>
    </div>
   </div>
   <script>
-    // Global state
-    let currentUser = {
-      profile: null,
-      userId: 'user-' + Date.now(),
-      email: null
-    };
-
-    let currentPlace = null;
+    let currentUser = null;
     let currentQuiz = null;
-    let quizScore = 0;
     let currentQuestion = 0;
+    let quizScore = 0;
+    let currentPlace = null;
     let currentChatId = null;
 
-    // Simulated chats for professional view
+    // Simulated data
+    const places = {
+      'delegacia': {
+        name: 'Delegacia Especializada',
+        address: 'Rua da Proteção, 123 - Centro',
+        phone: '(11) 9999-9999',
+        hours: '24 horas'
+      },
+      'hospital': {
+        name: 'Hospital Infantil',
+        address: 'Av. Saúde, 456 - Bairro Saúde',
+        phone: '(11) 8888-8888',
+        hours: '24 horas'
+      },
+      'conselho': {
+        name: 'Conselho Tutelar',
+        address: 'Praça dos Direitos, 789 - Centro',
+        phone: '(11) 7777-7777',
+        hours: 'Seg-Sex: 8h-18h'
+      },
+      'cras': {
+        name: 'CRAS - Centro de Referência',
+        address: 'Rua Social, 101 - Bairro Social',
+        phone: '(11) 6666-6666',
+        hours: 'Seg-Sex: 8h-17h'
+      }
+    };
+
+    const quizzes = {
+
+    meusDireitos: {
+        title: "Meus Direitos",
+        questions: [
+            {
+                question: "Toda criança tem direito a…",
+                options: [
+                    "Ter uma vida segura e protegida",
+                    "Fazer tudo sempre sozinha",
+                    "Nunca ir à escola",
+                    "Trabalhar desde pequena"
+                ],
+                correct: 0
+            },
+            {
+                question: "Qual documento protege os direitos das crianças?",
+                options: [
+                    "A Constituição Federal",
+                    "As regras da escola",
+                    "O contrato de videogame",
+                    "O caderno de provas"
+                ],
+                correct: 0
+            }
+        ]
+    },
+
+    prevencao: {
+        title: "Prevenção",
+        questions: [
+            {
+                question: "Se um adulto pedir segredo sobre algo que te deixa desconfortável, você deve…",
+                options: [
+                    "Guardar o segredo",
+                    "Contar imediatamente a um adulto de confiança",
+                    "Fingir que nada aconteceu",
+                    "Pedir para o adulto repetir"
+                ],
+                correct: 1
+            },
+            {
+                question: "Qual é um sinal de situação perigosa?",
+                options: [
+                    "Alguém te oferecer doces insistindo",
+                    "Brincar no parquinho",
+                    "Estar com amigos na escola",
+                    "Receber um elogio"
+                ],
+                correct: 0
+            }
+        ]
+    },
+
+    seguranca: {
+        title: "Segurança",
+        questions: [
+            {
+                question: "Quem você deve procurar se estiver em perigo?",
+                options: [
+                    "Um adulto de confiança",
+                    "Qualquer pessoa desconhecida",
+                    "Ninguém, melhor ficar quieto",
+                    "Procura sozinho uma saída"
+                ],
+                correct: 0
+            },
+            {
+                question: "É seguro compartilhar informações pessoais na internet?",
+                options: [
+                    "Sim, sempre!",
+                    "Não, isso pode ser perigoso!",
+                    "Só com amigos virtuais",
+                    "Só com desconhecidos legais"
+                ],
+                correct: 1
+            }
+        ]
+    },
+
+    pedirAjuda: {
+        title: "Pedir Ajuda",
+        questions: [
+            {
+                question: "Quando você deve pedir ajuda?",
+                options: [
+                    "Sempre que estiver com medo ou machucado",
+                    "Somente se for algo muito grave",
+                    "Nunca, resolva tudo sozinho",
+                    "Somente quando alguém disser"
+                ],
+                correct: 0
+            },
+            {
+                question: "Quem pode te ajudar?",
+                options: [
+                    "Um adulto de confiança",
+                    "Qualquer pessoa na rua",
+                    "Apenas crianças mais velhas",
+                    "Ninguém"
+                ],
+                correct: 0
+            }
+        ]
+    }
+
+};
+
+
     const simulatedChats = [
       {
-        id: 'chat-1',
-        childName: 'Ana (9 anos)',
-        lastMessage: 'Meu pai bateu em mim de novo...',
-        time: '2 min atrás',
+        id: 'chat1',
+        childName: 'Criança Anônima 1',
+        time: 'Agora',
+        lastMessage: 'Preciso de ajuda urgente...',
         urgent: true,
         messages: [
-          { role: 'child', content: 'Oi...', time: '14:23' },
-          { role: 'child', content: 'Você pode me ajudar?', time: '14:24' },
-          { role: 'child', content: 'Meu pai bateu em mim de novo...', time: '14:25' },
-          { role: 'child', content: 'Estou com medo', time: '14:25' }
+          { role: 'child', content: 'Olá, estou com medo' },
+          { role: 'bot', content: 'Entendo. Pode me contar mais?' },
+          { role: 'child', content: 'Alguém me machucou' }
         ]
       },
       {
-        id: 'chat-2',
-        childName: 'Pedro (12 anos)',
-        lastMessage: 'Não quero mais ir para casa',
-        time: '15 min atrás',
-        urgent: true,
-        messages: [
-          { role: 'child', content: 'Olá', time: '14:10' },
-          { role: 'child', content: 'Preciso conversar com alguém', time: '14:11' },
-          { role: 'child', content: 'Não quero mais ir para casa', time: '14:12' },
-          { role: 'child', content: 'Minha mãe sempre grita comigo e me xinga', time: '14:13' }
-        ]
-      },
-      {
-        id: 'chat-3',
-        childName: 'Maria (7 anos)',
-        lastMessage: 'Tenho medo do meu tio',
-        time: '1 hora atrás',
+        id: 'chat2',
+        childName: 'Criança Anônima 2',
+        time: '5 min atrás',
+        lastMessage: 'Quero saber sobre meus direitos',
         urgent: false,
         messages: [
-          { role: 'child', content: 'Oi anjo', time: '13:15' },
-          { role: 'child', content: 'Posso fazer uma pergunta?', time: '13:16' },
-          { role: 'child', content: 'Tenho medo do meu tio', time: '13:17' },
-          { role: 'child', content: 'Ele me toca de um jeito que não gosto', time: '13:18' }
+          { role: 'child', content: 'Quais são meus direitos?' },
+          { role: 'bot', content: 'Você tem direito à proteção, educação...' }
         ]
       }
     ];
 
-    // Quiz data
-    const quizzes = {
-      rights: {
-        title: '📚 Meus Direitos',
-        questions: [
-          {
-            question: 'Toda criança tem direito a:',
-            options: ['Educação', 'Trabalhar', 'Ficar sozinha', 'Nenhuma das opções'],
-            correct: 0
-          },
-          {
-            question: 'Qual é um direito fundamental da criança?',
-            options: ['Brincar', 'Obedecer sempre', 'Trabalhar em casa', 'Ficar calado'],
-            correct: 0
-          },
-          {
-            question: 'Quem deve proteger os direitos da criança?',
-            options: ['Só os pais', 'Toda a sociedade', 'Ninguém', 'Só a escola'],
-            correct: 1
+    // Fallback for dataSdk using localStorage
+    if (!window.dataSdk) {
+      window.dataSdk = {
+        handler: null,
+        async init(handler) {
+          this.handler = handler;
+          return { isOk: true };
+        },
+        async query(filter) {
+          const appData = JSON.parse(localStorage.getItem('appData') || '{}');
+          const items = appData[filter.type] || [];
+          if (filter.email) {
+            return items.filter(item => item.email === filter.email);
           }
-        ]
-      },
-      prevention: {
-        title: '🛡️ Prevenção',
-        questions: [
-          {
-            question: 'O que fazer se alguém te faz sentir desconfortável?',
-            options: ['Ficar quieto', 'Contar para um adulto de confiança', 'Guardar segredo', 'Esquecer'],
-            correct: 1
-          },
-          {
-            question: 'Toques que te deixam desconfortável devem ser:',
-            options: ['Ignorados', 'Aceitos', 'Relatados a um adulto', 'Escondidos'],
-            correct: 2
+          return items;
+        },
+        async create(item) {
+          const appData = JSON.parse(localStorage.getItem('appData') || '{}');
+          if (!appData[item.type]) appData[item.type] = [];
+          appData[item.type].push(item);
+          localStorage.setItem('appData', JSON.stringify(appData));
+          if (this.handler && typeof this.handler.onDataChanged === 'function') {
+            const data = await this.query({type: item.type});
+            this.handler.onDataChanged(data);
           }
-        ]
-      },
-      safety: {
-        title: '🔒 Segurança',
-        questions: [
-          {
-            question: 'É seguro compartilhar informações pessoais online?',
-            options: ['Sim, sempre', 'Não, nunca', 'Só com desconhecidos', 'Só fotos'],
-            correct: 1
-          },
-          {
-            question: 'O que fazer se encontrar conteúdo inapropriado online?',
-            options: ['Compartilhar', 'Contar aos pais/responsáveis', 'Ignorar', 'Guardar'],
-            correct: 1
-          }
-        ]
-      },
-      help: {
-        title: '🆘 Pedir Ajuda',
-        questions: [
-          {
-            question: 'Pedir ajuda quando você está em perigo é:',
-            options: ['Errado', 'Corajoso e correto', 'Fraqueza', 'Desnecessário'],
-            correct: 1
-          },
-          {
-            question: 'Quem pode ajudar em caso de violência?',
-            options: ['Ninguém', 'Conselho Tutelar', 'Só a família', 'Nenhuma opção'],
-            correct: 1
-          }
-        ]
-      }
-    };
-
-    // Places data
-    const places = {
-      ct1: {
-        name: 'Conselho Tutelar Centro',
-        address: 'Rua das Flores, 123 - Centro',
-        phone: '(11) 1234-5678',
-        hours: 'Segunda a Sexta, 8h às 18h'
-      },
-      ong1: {
-        name: 'ONG Proteção Infantil',
-        address: 'Av. Principal, 456 - Bairro Novo',
-        phone: '(11) 9876-5432',
-        hours: 'Segunda a Sexta, 9h às 17h'
-      },
-      hospital1: {
-        name: 'Hospital Municipal',
-        address: 'Rua da Saúde, 789 - Centro',
-        phone: '(11) 192',
-        hours: '24 horas'
-      }
-    };
-
-    // Default config for Element SDK
-    const defaultConfig = {
-      app_title: 'Anjo da Guarda',
-      welcome_message: 'Olá! Eu sou o Anjo da Guarda 👼',
-      emergency_button_text: 'Preciso de ajuda'
-    };
-
-    // Data SDK handler
-    const dataHandler = {
-      onDataChanged(data) {
-        renderReportsList(data);
-      }
-    };
-
-    // Initialize SDKs
-    async function initApp() {
-      if (window.dataSdk) {
-        const result = await window.dataSdk.init(dataHandler);
-        if (!result.isOk) {
-          console.error('Failed to initialize Data SDK');
+          return { isOk: true };
         }
-      }
-
-      if (window.elementSdk) {
-        window.elementSdk.init({
-          defaultConfig,
-          onConfigChange: async (config) => {
-            const title = config.app_title || defaultConfig.app_title;
-            const welcome = config.welcome_message || defaultConfig.welcome_message;
-
-            const titleElements = document.querySelectorAll('.header h1');
-            titleElements.forEach(el => {
-              if (el.textContent.includes('Anjo') || el.textContent.includes('Guarda')) {
-                el.textContent = '👼 ' + title;
-              }
-            });
-
-            const chatWelcome = document.querySelector('#chatMessages .message.bot');
-            if (chatWelcome) {
-              chatWelcome.textContent = welcome + ' Estou aqui para te ajudar. O que você gostaria de saber?';
-            }
-          },
-          mapToCapabilities: (config) => ({
-            recolorables: [],
-            borderables: [],
-            fontEditable: undefined,
-            fontSizeable: undefined
-          }),
-          mapToEditPanelValues: (config) => new Map([
-            ['app_title', config.app_title || defaultConfig.app_title],
-            ['welcome_message', config.welcome_message || defaultConfig.welcome_message],
-            ['emergency_button_text', config.emergency_button_text || defaultConfig.emergency_button_text]
-          ])
-        });
-      }
+      };
     }
 
-    // Screen navigation
+    // Show screen
     function showScreen(screenId) {
-      const screens = document.querySelectorAll('.screen');
-      screens.forEach(screen => screen.classList.remove('active'));
-      
-      const targetScreen = document.getElementById(screenId);
-      if (targetScreen) {
-        targetScreen.classList.add('active');
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(screenId).classList.add('active');
+
+      const emergencyBtn = document.getElementById('emergencyBtn');
+      if (currentUser && currentUser.profile === 'child' && screenId === 'screen-home') {
+        emergencyBtn.style.display = 'block';
+      } else {
+        emergencyBtn.style.display = 'none';
       }
 
-      // Update navigation active state
-      const navItems = document.querySelectorAll('.nav-item');
-      navItems.forEach(item => item.classList.remove('active'));
-      
-      // If showing attend list, render chats
+      if (screenId === 'screen-reports') {
+        window.dataSdk.query({type: 'report'}).then(renderReportsList);
+      }
+
       if (screenId === 'screen-attend-list') {
         renderChatList();
       }
-
-      function updateEmergencyVisibility() {
-        const isChild = currentUser.profile === 'child';
-        const emergencyButtons = document.querySelectorAll('.emergency-btn');
-    
-        emergencyButtons.forEach(btn => {
-          btn.style.display = isChild ? 'flex' : 'none';  
-        });
-      }
-
-      updateEmergencyVisibility();
     }
 
-    // Detect user type from email
-    function getUserTypeFromEmail(email) {
-      const lowerEmail = email.toLowerCase();
-      if (lowerEmail.includes('crianca') || lowerEmail.includes('child')) {
-        return 'child';
-      } else if (lowerEmail.includes('profissional') || lowerEmail.includes('professional') || lowerEmail.includes('rede')) {
-        return 'professional';
-      } else {
-        return 'parent'; // Default to parent/citizen
-      }
-    }
+    // Setup profile
+    async function setupProfile(profile, email) {
+      if (!profile) return;
 
-    // Profile setup based on type
-    function setupProfile(profile, email) {
-      currentUser.profile = profile;
-      currentUser.email = email;
+      currentUser = { email, profile, userId: email }; // Use email as userId for simplicity
+
+      document.getElementById('welcomeText').textContent = `Bem-vindo, ${profile === 'child' ? 'Criança' : profile === 'parent' ? 'Pai/Cidadão' : 'Profissional'}!`;
       
-      // Update welcome text
-      const welcomeTexts = {
-        child: 'Bem-vindo, criança! 👶',
-        parent: 'Bem-vindo, pai/cidadão! 👨‍👩‍👧',
-        professional: 'Bem-vindo, profissional! 👮'
-      };
-      
-      const welcomeEl = document.getElementById('welcomeText');
-      if (welcomeEl) {
-        welcomeEl.textContent = welcomeTexts[profile];
-      }
+      // Hide all nav items first
+      document.querySelectorAll('.nav-item').forEach(item => item.style.display = 'none');
 
-      const homeText = document.getElementById('homeInstructions');
+      // Show common items
+      document.querySelector('[onclick="showScreen(\'screen-home\')"]').style.display = 'block';
 
-    if (profile === 'parent') {
-      homeText.textContent = "Use o menu abaixo para acessar as funcionalidades do sistema.";
-    }
-
-      // Show/hide menu items and emergency button based on profile
-      const navChat = document.getElementById('navChat');
-      const navGames = document.getElementById('navGames');
-      const navReport = document.getElementById('navReport');
-      const navReports = document.getElementById('navReports');
-      const navMap = document.getElementById('navMap');
-      const emergencyBtn = document.getElementById('emergencyBtn');
-      
       if (profile === 'child') {
-        navChat.style.display = 'flex';
-        navGames.style.display = 'flex';
-        navReport.style.display = 'none';
-        navReports.style.display = 'none';
-        navMap.style.display = 'flex';
-        emergencyBtn.style.display = 'flex';
+        document.getElementById('homeInstructions').textContent = 'Use o menu abaixo para acessar as funcionalidades do sistema. Em caso de emergência, clique no botão vermelho.';
+        document.getElementById('navChat').style.display = 'block';
+        document.getElementById('navMap').style.display = 'block';
+        document.getElementById('navGames').style.display = 'block';
       } else if (profile === 'parent') {
-        navChat.style.display = 'none';
-        navGames.style.display = 'none';
-        navReport.style.display = 'flex';
-        navReports.style.display = 'flex';
-        navMap.style.display = 'flex';
-        emergencyBtn.style.display = 'none';
+        document.getElementById('homeInstructions').textContent = 'Use o menu abaixo para acessar as funcionalidades do sistema.';
+        document.getElementById('navReport').style.display = 'block';
+        document.getElementById('navReports').style.display = 'block';
+        document.getElementById('navMap').style.display = 'block';
       } else if (profile === 'professional') {
-        // Professional only has home and attend buttons
-        navChat.style.display = 'none';
-        navGames.style.display = 'none';
-        navReport.style.display = 'none';
-        navReports.style.display = 'none';
-        navMap.style.display = 'none';
-        emergencyBtn.style.display = 'none';
-        
-        // Update home instructions for professional
-        const homeInstructions = document.getElementById('homeInstructions');
-        if (homeInstructions) {
-          homeInstructions.textContent = 'Use o menu abaixo para acessar o atendimento às crianças.';
-        }
-        
-        // Add attend button to main nav
-        const mainNav = document.getElementById('mainNavigation');
-        mainNav.innerHTML = `
+        document.getElementById('homeInstructions').textContent = 'Use o menu abaixo para acessar o atendimento às crianças.';
+        document.getElementById('navReports').style.display = 'block';
+        document.getElementById('navChat').style.display = 'none'; // Profissionais têm lista de atendimentos separada
+      }
+
+      // Fetch and render reports
+      const data = await window.dataSdk.query({type: 'report'});
+      renderReportsList(data);
+
+      if (profile === 'professional') {
+        renderChatList();
+        document.getElementById('mainNavigation').innerHTML = `
           <button class="nav-item active" onclick="showScreen('screen-home')">
             <span class="icon">🏠</span>
             <span class="label">Início</span>
           </button>
           <button class="nav-item" onclick="showScreen('screen-attend-list')">
             <span class="icon">👥</span>
-            <span class="label">Atendimento</span>
+            <span class="label">Atendimentos</span>
           </button>
         `;
       }
 
       const mapNav = document.getElementById('mapNav');
       if (profile === 'child') {
-    if (mapNav) {
-        mapNav.innerHTML = `
+        if (mapNav) {
+          mapNav.innerHTML = `
             <button class="nav-item" onclick="showScreen('screen-home')">
                 <span class="icon">🏠</span><span class="label">Início</span>
             </button>
@@ -1625,11 +1523,11 @@
             <button class="nav-item" onclick="showScreen('screen-games')">
                 <span class="icon">🎮</span><span class="label">Jogos</span>
             </button>`;
-    }
-}
-    if (profile === 'parent') {
-    if (mapNav) {
-        mapNav.innerHTML = `
+        }
+      }
+      if (profile === 'parent') {
+        if (mapNav) {
+          mapNav.innerHTML = `
             <button class="nav-item" onclick="showScreen('screen-home')">
                 <span class="icon">🏠</span><span class="label">Início</span>
             </button>
@@ -1642,18 +1540,82 @@
             <button class="nav-item active" onclick="showScreen('screen-map')">
                 <span class="icon">🗺️</span><span class="label">Mapa</span>
             </button>`;
-    }
-}
+        }
+      }
 
       showScreen('screen-home');
     }
 
+    // Initialize app
+    async function initApp() {
+      if (window.dataSdk) {
+        // Optional: Initialize if needed
+      }
+    }
+
     // Login form
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const userType = getUserTypeFromEmail(email);
-      setupProfile(userType, email);
+      const email = document.getElementById('email').value.toLowerCase();
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('loginError');
+      errorDiv.textContent = '';
+
+      const users = await window.dataSdk.query({type: 'user', email: email});
+      if (users.length === 0) {
+        errorDiv.textContent = 'Email não cadastrado';
+        return;
+      }
+      const user = users[0];
+      if (user.password !== password) {
+        errorDiv.textContent = 'Senha incorreta';
+        return;
+      }
+      setupProfile(user.profile, email);
+    });
+
+    // Create account button
+    document.getElementById('createAccountBtn').addEventListener('click', function() {
+      showScreen('screen-register');
+    });
+
+    // Register form
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('regEmail').value.toLowerCase();
+      const password = document.getElementById('regPassword').value;
+      const profile = document.getElementById('userType').value;
+      const errorDiv = document.getElementById('registerError');
+      errorDiv.textContent = '';
+
+      if (!profile) {
+        errorDiv.textContent = 'Selecione o tipo de usuário';
+        return;
+      }
+
+      const existing = await window.dataSdk.query({type: 'user', email: email});
+      if (existing.length > 0) {
+        errorDiv.textContent = 'Email já cadastrado';
+        return;
+      }
+
+      const userData = {
+        type: 'user',
+        email: email,
+        password: password, // Note: In production, hash this!
+        profile: profile,
+        createdAt: new Date().toISOString()
+      };
+
+      const result = await window.dataSdk.create(userData);
+      if (result.isOk) {
+        // Success
+        alert('Conta criada com sucesso! Agora faça login.');
+        document.getElementById('registerForm').reset();
+        showScreen('screen-login');
+      } else {
+        errorDiv.textContent = 'Erro ao criar conta. Tente novamente.';
+      }
     });
 
     // Report form
@@ -1703,56 +1665,24 @@
         createdAt: new Date().toISOString()
       };
 
-      if (window.dataSdk) {
-        const result = await window.dataSdk.create(reportData);
-        
-        // Reset button state
-        submitBtn.disabled = false;
-        submitText.textContent = 'Enviar Denúncia';
-        
-        if (result.isOk) {
-          document.getElementById('protocolNumber').textContent = protocol;
-          document.getElementById('reportForm').reset();
-          showScreen('screen-confirmation');
-        } else {
-          const errorMsg = document.createElement('div');
-          errorMsg.style.cssText = 'background: #ffebee; border: 2px solid #f44336; border-radius: 8px; padding: 12px; margin-top: 12px; color: #c62828; text-align: center;';
-          errorMsg.textContent = 'Erro ao enviar denúncia. Tente novamente.';
-          document.querySelector('#reportForm').appendChild(errorMsg);
-          setTimeout(() => errorMsg.remove(), 3000);
-        }
+      const result = await window.dataSdk.create(reportData);
+      
+      // Reset button state
+      submitBtn.disabled = false;
+      submitText.textContent = 'Enviar Denúncia';
+      
+      if (result.isOk) {
+        document.getElementById('protocolNumber').textContent = protocol;
+        document.getElementById('reportForm').reset();
+        showScreen('screen-confirmation');
+      } else {
+        const errorMsg = document.createElement('div');
+        errorMsg.style.cssText = 'background: #ffebee; border: 2px solid #f44336; border-radius: 8px; padding: 12px; margin-top: 12px; color: #c62828; text-align: center;';
+        errorMsg.textContent = 'Erro ao enviar denúncia. Tente novamente.';
+        document.querySelector('#reportForm').appendChild(errorMsg);
+        setTimeout(() => errorMsg.remove(), 3000);
       }
     });
-
-    // Sample reports for demonstration
-    const sampleReports = [
-      {
-        id: 'sample-1',
-        type: 'report',
-        userId: 'demo-user',
-        protocol: 'PRO-12345678',
-        violenceType: 'negligencia',
-        description: 'Criança sozinha em casa frequentemente',
-        date: '2024-01-15',
-        location: 'Rua das Acácias, 234 - Jardim Europa',
-        victimAge: '4-7',
-        status: 'analyzing',
-        createdAt: new Date('2024-01-15').toISOString()
-      },
-      {
-        id: 'sample-2',
-        type: 'report',
-        userId: 'demo-user',
-        protocol: 'PRO-87654321',
-        violenceType: 'fisica',
-        description: 'Criança com marcas de agressão',
-        date: '2024-01-10',
-        location: 'Av. Central, 567 - Centro',
-        victimAge: '8-12',
-        status: 'completed',
-        createdAt: new Date('2024-01-10').toISOString()
-      }
-    ];
 
     // Render reports list
     function renderReportsList(data) {
@@ -1760,11 +1690,6 @@
       if (!reportsList) return;
 
       let userReports = data.filter(item => item.type === 'report' && (currentUser.profile === 'professional' || item.userId === currentUser.userId));
-
-      // Add sample reports if user is parent/citizen and no reports exist
-      if (currentUser.profile === 'parent' && userReports.length === 0) {
-        userReports = sampleReports;
-      }
 
       if (userReports.length === 0) {
         reportsList.innerHTML = `
@@ -1844,7 +1769,7 @@
       
       const messagesContainer = document.getElementById('attendChatMessages');
       messagesContainer.innerHTML = chat.messages.map(msg => `
-        <div class="message ${msg.role === 'child' ? 'user' : 'bot'}">
+        <div class="message ${msg.role === 'child' ? 'bot' : 'user'}">
           ${msg.content}
         </div>
       `).join('');
@@ -1866,7 +1791,7 @@
       
       // Add professional message
       const profMsg = document.createElement('div');
-      profMsg.className = 'message bot';
+      profMsg.className = 'message user';
       profMsg.textContent = message;
       messagesContainer.appendChild(profMsg);
       
@@ -1876,7 +1801,7 @@
       // Simulate child response
       setTimeout(() => {
         const childMsg = document.createElement('div');
-        childMsg.className = 'message user';
+        childMsg.className = 'message bot';
         childMsg.textContent = 'Obrigado por me ouvir...';
         messagesContainer.appendChild(childMsg);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -2014,6 +1939,13 @@
       isHumanAttendant = false;
       messageCount = 0;
       showScreen('screen-chat-conversation');
+      const conversationMessages = document.getElementById('conversationMessages');
+      conversationMessages.innerHTML = `
+        <div class="message bot">
+          Olá! Pode me contar o que está acontecendo. Estou aqui para ouvir você. 😊
+        </div>
+      `;
+      conversationMessages.scrollTop = conversationMessages.scrollHeight;
     }
 
     // Back to chat menu
@@ -2024,11 +1956,7 @@
       
       // Reset conversation messages
       const conversationMessages = document.getElementById('conversationMessages');
-      conversationMessages.innerHTML = `
-        <div class="message bot">
-          Olá! Pode me contar o que está acontecendo. Estou aqui para ouvir você. 😊
-        </div>
-      `;
+      conversationMessages.innerHTML = '';
       
       // Hide human attendant banner
       document.getElementById('humanAttendantBanner').style.display = 'none';
@@ -2150,6 +2078,11 @@
         }
       }, 1000);
     });
+
+    function logout() {
+      currentUser = null;
+      showScreen('screen-login');
+    }
 
     // Initialize app when ready
     initApp();
